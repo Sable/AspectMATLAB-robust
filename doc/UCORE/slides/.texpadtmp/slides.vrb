@@ -1,0 +1,28 @@
+\frametitle{Extended Argument Matching}
+\framesubtitle{Using matcher function}
+\textbf{Input argument matching:}
+\begin{lstlisting}[basicstyle=\small, language=MATLAB]
+foo(var1, var2(:).f, var3{:})
+\end{lstlisting}
+$\Rightarrow$
+\begin{lstlisting}[basicstyle=\small, language=MATLAB]
+AM_VAR_1 = {var1, var2(:), var{:}};
+AM_MATCH_RESULT(1) = matcher1(AM_VAR_1);
+AM_MATCH_RESULT(2) = matcher2(AM_VAR_2);
+% ...
+foo(AM_VAR_1{:})
+\end{lstlisting}
+
+\textbf{Output argument matching:}
+\begin{lstlisting}[basicstyle=\small, language=MATLAB]
+foo(var1, var2(:).f, var3{:})
+\end{lstlisting}
+$\Rightarrow$
+\begin{lstlisting}[basicstyle=\small, language=MATLAB]
+% callWithMatcher is a MEX implemented subroutine using C
+AM_VAR_1 = {var1, var2(:), var{:}};
+[AM_MATCH_RESULT, ...] = callWithMatcher(
+                             @foo, AM_VAR_1,
+                             @matcher1, @matcher2, ...
+                         );
+\end{lstlisting}

@@ -1,0 +1,7 @@
+[line:  8] execution(public static void DemoTarget.main(java.lang.String[]))
+[line:  9] call(public static void DemoTarget.foo())
+[line:  2] execution(public static void DemoTarget.foo())
+[line: 10] call(public static void DemoTarget.goo())
+[line:  4] execution(public static void DemoTarget.goo())
+[line:  4] call(public static void DemoTarget.hoo())
+[line:  6] execution(public static void DemoTarget.hoo())

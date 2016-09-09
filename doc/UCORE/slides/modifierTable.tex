@@ -1,0 +1,13 @@
+\begin{table}[]
+\centering
+\begin{tabular}{c|ccc|ccc|c}
+\multirow{2}{*}{Pattern} & \multicolumn{3}{c|}{Dimension}             & \multicolumn{3}{c|}{IsType}                & \multirow{2}{*}{Scope} \\
+                         & Before       & After        & Around       & Before       & After        & Around       &                        \\ \hline
+Get/Set                  & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$           \\
+Call/Exec                & $\times$     & $\checkmark$ & $\times$     & $\times$     & $\checkmark$ & $\times$     & $\checkmark$           \\
+Annotation               & $\times$     & $\times$     & $\times$     & $\times$     & $\times$     & $\times$     & $\checkmark$           \\
+Loops                    & $\times$     & $\times$     & $\times$     & $\times$     & $\times$     & $\times$     & $\checkmark$           \\
+MainExec                 & $\times$     & $\times$     & $\times$     & $\times$     & $\times$     & $\times$     & $\times$               \\
+Operator                 & $\times$     & $\checkmark$ & $\times$     & $\times$     & $\checkmark$ & $\times$     & $\checkmark$          
+\end{tabular}
+\end{table}

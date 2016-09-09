@@ -1,0 +1,41 @@
+\begin{thebibliography}{1}
+
+\bibitem{AspectMATLABPPpaper}
+Laurie~Hendren Andrew~Bodzay.
+\newblock Aspectmatlab++: Annotations, types, and aspects for scientists.
+\newblock {\em MODULARITY'15}, 2015.
+
+\bibitem{McSAF}
+Jesse Doherty.
+\newblock Mcsaf: An extensible static analysis framework for the matlab
+  language.
+\newblock Master's thesis, McGill University, 2011.
+
+\bibitem{KindAnalysis}
+Laurie~Hendren Jesse~Doherty and Soroush Radpour.
+\newblock Kind analysis for matlab.
+\newblock {\em OOPSLA’11}, 2011.
+
+\bibitem{McLabParser}
+Samuel Suffos.
+\newblock Mclab-parser.
+\newblock URL: \url{https://github.com/Sable/mclab-parser}.
+
+\bibitem{AspectMATLABpaper}
+Anton~Dubrau Toheed~Aslam, Jesse~Doherty and Laurie Hendren.
+\newblock Aspectmatlab: An aspect-oriented scientific programming language.
+\newblock {\em AOSD'10}, 2010.
+
+\bibitem{aspectjOnlinePointcut}
+Palo Alto Research~Center Xerox~Corporation.
+\newblock The aspectj programming guide, 2003.
+\newblock URL:
+  \url{https://eclipse.org/aspectj/doc/released/progguide/semantics-pointcuts.html}.
+
+\bibitem{aspectjOnlineAdvice}
+Palo Alto Research~Center Xerox~Corporation.
+\newblock The aspectj programming guide, 2003.
+\newblock URL:
+  \url{https://eclipse.org/aspectj/doc/next/progguide/semantics-advice.html}.
+
+\end{thebibliography}
