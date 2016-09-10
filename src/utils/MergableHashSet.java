@@ -39,7 +39,7 @@ public class MergableHashSet<T> extends HashSet<T> implements SetOperation<Merga
      * @throws NullPointerException if {@code set} is {@code null}
      */
     @Override
-    public MergableHashSet<T> substraction(MergableHashSet<T> set) {
+    public MergableHashSet<T> subtraction(MergableHashSet<T> set) {
         if (set == null) throw new NullPointerException();
         MergableHashSet<T> retSet = new MergableHashSet<>();
         retSet.addAll(this.stream().filter(element -> !set.contains(element)).collect(Collectors.toSet()));

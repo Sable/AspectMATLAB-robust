@@ -19,5 +19,5 @@ public interface SetOperation<T> {
      * @param obj the given object
      * @return a new instance of {@code T}, with value as (this object \ given object)
      */
-    T substraction(T obj);
+    T subtraction(T obj);
 }

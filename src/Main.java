@@ -1,20 +1,10 @@
-import Matlab.Nodes.UnitNode;
-import Matlab.Recognizer.INotifier;
-import Matlab.Recognizer.MRecognizer;
-import Matlab.Transformer.NodeToAstTransformer;
-import Matlab.Utils.IReport;
-import Matlab.Utils.Message;
-import Matlab.Utils.Result;
-import abstractPattern.*;
-import abstractPattern.Pattern;
-import abstractPattern.primitive.Annotation;
-import abstractPattern.primitive.Operator;
 import ast.*;
 import matcher.Alphabet;
-import utils.UniqueMap;
+import matcher.nfa.NFA;
+import matcher.nfa.NFABuilder;
+import matcher.nfa.NFAState;
 
-import java.util.Iterator;
-import java.util.stream.IntStream;
+import java.util.Arrays;
 
 public class Main {
     public static void main(String args[]) {
@@ -51,18 +41,12 @@ public class Main {
         map.put(1, "2");
         map.put(1, "3");
         */
-        Alphabet<Class<? extends Expr>> testAlphabet = new Alphabet<>();
-        testAlphabet.add(PlusExpr.class);
-        testAlphabet.add(MinusExpr.class);
-        testAlphabet.add(MatrixExpr.class);
-        testAlphabet.add(PlusExpr.class);
-
-        Alphabet<Class<? extends Expr>> test2 = new Alphabet<Class<? extends Expr>>().add(PlusExpr.class).add(UPlusExpr.class);
-
-        System.out.println(testAlphabet.toString());
-        System.out.println(test2.toString());
-        System.out.println("intersection:" + testAlphabet.intersection(test2));
-        System.out.println("union:       " + testAlphabet.union(test2));
-        System.out.println("subtraction: " + testAlphabet.substraction(test2));
+        Alphabet<Integer> alphabet = new Alphabet<Integer>().add(1).add(2).add(3);
+        System.out.println(
+                NFABuilder.fromDimensionSignatureList(
+                        Arrays.asList("1","..","2","*","3"),
+                        alphabet
+                )
+        );
     }
 }
