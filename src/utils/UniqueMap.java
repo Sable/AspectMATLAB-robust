@@ -3,7 +3,7 @@ package utils;
 import java.util.*;
 
 /** an implementation of bijective map (i.e. no two keys have the same value) */
-public class UniqueMap<K, V> extends AbstractMap<K, V> {
+public class UniqueMap<K, V> extends AbstractMap<K, V> implements Cloneable {
     private final HashMap<K, V> directMap = new HashMap<>();
     private final HashMap<V, K> inverseMap = new HashMap<>();
 
@@ -97,6 +97,18 @@ public class UniqueMap<K, V> extends AbstractMap<K, V> {
         UniqueMap<V, K> retMap = new UniqueMap<V, K>();
         entrySet().stream().forEach(entry -> retMap.put(entry.getValue(), entry.getKey()));
         return retMap;
+    }
+
+    /**
+     * build a copy of this map, notice that this will only copy the map, the returning map will containing the same
+     * reference as the current map
+     * @return the copied map
+     */
+    @Override
+    public UniqueMap<K, V> clone() {
+        UniqueMap<K, V> returnMap = new UniqueMap<>();
+        this.entrySet().forEach(entry -> returnMap.put(entry.getKey(), entry.getValue()));
+        return returnMap;
     }
 
     @Override

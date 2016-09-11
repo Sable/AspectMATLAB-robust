@@ -1,9 +1,6 @@
 package utils;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /** generate literal {@link java.util.List} and {@link java.util.Set} */
 public class LiteralBuilder<T> {
@@ -26,6 +23,17 @@ public class LiteralBuilder<T> {
      */
     public LiteralBuilder<T> put(T... elements) {
         for (T element : elements) bufferList.add(element);
+        return this;
+    }
+
+    /**
+     * add elements to the internal buffer, it will be added according the order specify by the iterator
+     * @param elements elements to add
+     * @return the builder itself
+     * @throws NullPointerException if {@code elements} is {@code null}
+     */
+    public LiteralBuilder<T> putAll(Iterable<T> elements) {
+        Optional.ofNullable(elements).orElseThrow(NullPointerException::new).forEach(bufferList::add);
         return this;
     }
 
