@@ -1,4 +1,6 @@
-package matcher;
+package matcher.nfa;
+
+import matcher.Alphabet;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -50,6 +52,15 @@ public class NFA<T> {
     }
 
     /**
+     * @return return set containing all states of such NFA
+     */
+    public Set<NFAState<T>> getStateSet() {
+        Set<NFAState<T>> retSet = new HashSet<>();
+        stateSet.forEach(retSet::add);
+        return retSet;
+    }
+
+    /**
      * determine if a state is within current NFA, if {@code state} is {@code null}, {@code false} will be returned
      * @param state state to test
      * @return {@code true} if {@code state} is within current NFA, otherwise, {@code false} will be returned
@@ -80,6 +91,22 @@ public class NFA<T> {
         if (startingState == null) throw new NullPointerException();
         if (!hasState(startingState)) throw new IllegalArgumentException();
         this.startingState = startingState;
+    }
+
+    /**
+     * @return the start state of this NFA
+     */
+    public NFAState<T> getStartingState() {
+        return startingState;
+    }
+
+    /**
+     * @return the accepting state of this NFA
+     */
+    public Set<NFAState<T>> getAcceptingState() {
+        Set<NFAState<T>> retSet = new HashSet<>();
+        retSet.addAll(acceptingState);
+        return retSet;
     }
 
     /**

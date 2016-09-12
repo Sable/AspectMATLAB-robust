@@ -1,6 +1,9 @@
-package matcher;
+package matcher.nfa;
+
+import matcher.Alphabet;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -9,7 +12,7 @@ import java.util.stream.Collectors;
  */
 public class NFAState<T> {
     private final Object stateName;
-    private final Alphabet<?, T> alphabet;
+    private final Alphabet alphabet;
     private final Map<Object, Set<NFAState<T>>> stateTransferMap = new HashMap<>();
     private final NFA<T> parentNFA;
 
@@ -88,15 +91,65 @@ public class NFAState<T> {
         return stateName;
     }
 
+    /**
+     * get epsilon closure set of the current NFA state (i.e. set of NFA state that are reachable from current NFA
+     * state with only epsilon transition)
+     * @return epsilon closure set of NFA state
+     */
+    public Set<NFAState<T>> getEpsilonClosureSet() {
+        Set<NFAState<T>> retSet = new HashSet<>();
+        new Consumer<NFAState<T>>() {
+            @Override
+            public void accept(NFAState<T> state) {
+                if (retSet.contains(state)) return;
+                retSet.add(state);
+                state.stateTransferMap.get(alphabet.epsilonTransitionCode).forEach(this);
+            }
+        }.accept(this);
+        return retSet;
+    }
+
+    /**
+     * get sigma closure set of the current NFA state (i.e. set of NFA state that are reachable from current NFA
+     * state with only epsilon transitions or one sigma transition)
+     * @return sigma closure set of NFA state
+     */
+    public Set<NFAState<T>> getSigmaClosureSet() {
+        Set<NFAState<T>> retSet = new HashSet<>();
+        getEpsilonClosureSet()
+                .forEach(state -> retSet.addAll(state.stateTransferMap.get(alphabet.sigmaTransitionCode)));
+        return retSet;
+    }
+
+    /**
+     * get state closure set of the current NFA state (i.e. set of NFA state that are reachable from current NFA
+     * state with only epsilon transition, and one given symbol). If {@code symbol} is null, this method will simply
+     * return the same result as {@link NFAState#getEpsilonClosureSet()}, if {@code symbol} is not contained in the
+     * alphabet, this method will return the same result as {@link NFAState#getSigmaClosureSet()}.
+     * @param symbol
+     * @return
+     */
+    public Set<NFAState<T>> getStateClosureSet(T symbol) {
+        if (symbol == null) return getEpsilonClosureSet();
+        Object symbolCode = alphabet.getCodeBySymbol(symbol);
+        Set<NFAState<T>> stateClosureSet = new HashSet<>();
+        getEpsilonClosureSet().forEach(state -> stateClosureSet.addAll(state.stateTransferMap.get(symbolCode)));
+        return stateClosureSet;
+    }
+
     @Override
     public String toString() {
         String stateName = getStateName().toString();
         String stateContent = stateTransferMap.entrySet().stream()
-                .map(entry -> String.format("%s=%s",
-                        entry.getKey().toString(),
-                        entry.getValue().stream()
-                                .map(state -> state.getStateName().toString())
-                                .collect(Collectors.toList()).toString()))
+                .map(entry -> entry.getValue().isEmpty()?"":
+                        String.format("%s=%s",
+                                entry.getKey().equals(alphabet.epsilonTransitionCode)?"epsilon":
+                                        entry.getKey().equals(alphabet.sigmaTransitionCode)?"sigma":
+                                                alphabet.getSymbolByCode(entry.getKey()).toString(),
+                                entry.getValue().stream()
+                                        .map(state -> state.getStateName().toString())
+                                        .collect(Collectors.toList()).toString()))
+                .filter(printedString -> !printedString.isEmpty())
                 .collect(Collectors.toList()).toString();
         return String.format("<%s, %s>", stateName, stateContent);
     }
