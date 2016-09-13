@@ -12,6 +12,10 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+/**
+ * an implementation of DFA in the extended algorithm matching algorithm
+ * @param <T> base class of symbol of state transition
+ */
 public class DFA<T> {
     private final Alphabet<?, T> alphabet;
     private final NFA<T> buildFrom;
@@ -19,24 +23,43 @@ public class DFA<T> {
     private final Iterator dfaNameGenerator;
 
     private DFAState<T> startingState = null;
-    private Set<DFAState<T>> accpetingState = new HashSet<>();
+    private Set<DFAState<T>> acceptingState = new HashSet<>();
 
+    /**
+     * construct DFA from a given NFA and DFA state name generator
+     * @param nfa NFA to built from
+     * @param dfaNameGenerator name generator to generate name for DFA states. By Contract, {@code dfaNameGenerator}
+     *                         should generate names with none pair of names are equal.
+     * @throws NullPointerException if {@code nfa} or {@code dfaNameGenerator} is {@code null}
+     * @throws IllegalArgumentException if {@code nfa} is not complete
+     */
     public DFA(NFA<T> nfa, Iterator<?> dfaNameGenerator) {
         if (nfa == null) throw new NullPointerException();
+        if (!nfa.isComplete()) throw new IllegalArgumentException();
         this.alphabet = nfa.getAlphabet();
         this.buildFrom = nfa;
         this.dfaNameGenerator = Optional.ofNullable(dfaNameGenerator).orElseThrow(NullPointerException::new);
         constructDFAFromNFA();
     }
 
+    /**
+     * construct DFA from a given NFA and use trivial name generator {@code IntStream.iterate(1, x -> x + 1).iterator()}
+     * @param nfa NFA to built from
+     * @throws NullPointerException if {@code nfa} is {@code null}
+     * @throws IllegalArgumentException if {@code nfa} is not complete
+     */
     public DFA(NFA<T> nfa) {
         if (nfa == null) throw new NullPointerException();
+        if (!nfa.isComplete()) throw new IllegalArgumentException();
         this.alphabet = nfa.getAlphabet();
         this.buildFrom = nfa;
         this.dfaNameGenerator = IntStream.iterate(1, x -> x + 1).iterator();
         constructDFAFromNFA();
     }
 
+    /**
+     * a helper method to construct DFA from NFA using subset construction method
+     */
     private void constructDFAFromNFA() {
         Consumer<DFAState<T>> recCollector = new Consumer<DFAState<T>>() {
             @Override
@@ -46,7 +69,7 @@ public class DFA<T> {
                     dfaState.getCorrespondNFASubset()
                             .forEach(state -> reachableSet.addAll(state.getStateClosureSet(symbol)));
                     DFAState<T> targetDFAState = stateSet.stream()
-                            .filter(state -> state.isEquvalent(reachableSet))
+                            .filter(state -> state.isEquivalent(reachableSet))
                             .findAny()
                             .orElseGet(() -> newState(reachableSet));
                     if (!stateSet.contains(targetDFAState)) {
@@ -59,7 +82,7 @@ public class DFA<T> {
                 dfaState.getCorrespondNFASubset()
                         .forEach(state -> sigmaReachableSet.addAll(state.getSigmaClosureSet()));
                 DFAState<T> targetSigmaDFAState = stateSet.stream()
-                        .filter(state -> state.isEquvalent(sigmaReachableSet))
+                        .filter(state -> state.isEquivalent(sigmaReachableSet))
                         .findAny()
                         .orElseGet(() -> newState(sigmaReachableSet));
                 if (!stateSet.contains(targetSigmaDFAState)) {
@@ -75,11 +98,16 @@ public class DFA<T> {
         recCollector.accept(startState);
         buildFrom.getAcceptingState().forEach(nfaState ->
             stateSet.forEach(dfaState -> {
-                if (dfaState.getCorrespondNFASubset().contains(nfaState)) accpetingState.add(dfaState);
+                if (dfaState.getCorrespondNFASubset().contains(nfaState)) acceptingState.add(dfaState);
             })
         );
     }
 
+    /**
+     * create a new state in DFA
+     * @param correspondingNFASet NFA subset get from the subset construction
+     * @return an reference to the newly constructed DFA state
+     */
     @SuppressWarnings("deprecation")
     public DFAState<T> newState(Set<NFAState<T>> correspondingNFASet) {
         if (correspondingNFASet == null) throw new NullPointerException();
@@ -90,14 +118,25 @@ public class DFA<T> {
         return newState;
     }
 
+    /**
+     * @return alphabet corresponding to this DFA
+     */
     public Alphabet<?, T> getAlphabet() {
         return alphabet;
     }
 
+    /**
+     * @return the base NFA
+     */
     public NFA<T> getBuildFrom() {
         return buildFrom;
     }
 
+    /**
+     * determine whether a DFA state is belong to current DFA
+     * @param state state to determine
+     * @return if {@code state} is within current DFA return {@code true}, otherwise return {@code false}.
+     */
     public boolean hasState(DFAState<T> state) {
         if (state == null) return false;
         return stateSet.contains(state);
@@ -107,7 +146,7 @@ public class DFA<T> {
     public String toString() {
         String statesToString = stateSet.toString();
         String startStateToString = startingState.getStateName().toString();
-        String acceptStatesToString = accpetingState.stream()
+        String acceptStatesToString = acceptingState.stream()
                 .map(state -> state.getStateName().toString())
                 .collect(Collectors.toSet()).toString();
         return String.format("<%s, %s, %s>", statesToString, startStateToString, acceptStatesToString);

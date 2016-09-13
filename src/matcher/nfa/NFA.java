@@ -110,6 +110,16 @@ public class NFA<T> {
     }
 
     /**
+     * determine if this NFA is complete
+     * @return {@code true} if NFA is complete, otherwise return {@code false}
+     */
+    public boolean isComplete() {
+        if (startingState  == null) return false;
+        if (stateSet.isEmpty()) return false;
+        return true;
+    }
+
+    /**
      * add a accepting state to this NFA
      * @param acceptingState appending accept state
      * @throws NullPointerException if {@code acceptingState} is {@code null}

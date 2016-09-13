@@ -126,8 +126,8 @@ public class NFAState<T> {
      * state with only epsilon transition, and one given symbol). If {@code symbol} is null, this method will simply
      * return the same result as {@link NFAState#getEpsilonClosureSet()}, if {@code symbol} is not contained in the
      * alphabet, this method will return the same result as {@link NFAState#getSigmaClosureSet()}.
-     * @param symbol
-     * @return
+     * @param symbol symbol to calculate the closure set
+     * @return state closure set of a symbol
      */
     public Set<NFAState<T>> getStateClosureSet(T symbol) {
         if (symbol == null) return getEpsilonClosureSet();

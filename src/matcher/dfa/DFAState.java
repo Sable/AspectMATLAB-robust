@@ -8,6 +8,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * an implementation of DFA state in the extended algorithm matching algorithm
+ * @param <T> base class of symbol of state transition
+ */
 public class DFAState<T> {
     private final Object stateName;
     private final Set<NFAState<T>> correspondNFASubset;
@@ -17,6 +21,14 @@ public class DFAState<T> {
     private final Alphabet alphabet;
     private final NFA<T> buildFrom;
 
+    /**
+     * construct from a given state name, a equivalent NFA state subset, and a parent DFA
+     * @param stateName state name
+     * @param correspondNFASubset corresponding NFA state set (from subset construction method)
+     * @param parentDFA parent DFA
+     * @throws NullPointerException if any of {@code stateName}, {@code correspondNFASubset} or {@code parentDFA} is
+     *                              {@code null}
+     */
     @Deprecated
     public DFAState(Object stateName, Set<NFAState<T>> correspondNFASubset, DFA<T> parentDFA) {
         this.stateName = Optional.ofNullable(stateName).orElseThrow(NullPointerException::new);
@@ -26,8 +38,13 @@ public class DFAState<T> {
         buildFrom = Optional.ofNullable(parentDFA).orElseThrow(NullPointerException::new).getBuildFrom();
     }
 
-
-    public boolean isEquvalent(DFAState<T> dfaState) {
+    /**
+     * determine if current DFA contains the same NFA subset as a given DFA state. If the given DFA state belong to a
+     * different DFA other than the current DFA state's parent DFA, this method will always return {@code false}.
+     * @param dfaState given DFA state
+     * @return if the given DFA represent the same NFA subset return {@code true}, otherwise return {@code false}.
+     */
+    public boolean isEquivalent(DFAState<T> dfaState) {
         if (dfaState == null) return false;
         if (!parentDFA.equals(dfaState.parentDFA)) return false;
         return Stream.concat(correspondNFASubset.stream(), dfaState.correspondNFASubset.stream())
@@ -35,7 +52,14 @@ public class DFAState<T> {
                 .noneMatch(result -> !result);
     }
 
-    public boolean isEquvalent(Set<NFAState<T>> nfaStates) {
+    /**
+     * determine if current DFA contains the same NFA subset as the given set.
+     * @param nfaStates set of NFA states to compare
+     * @return if the given set of NFA state equal to the subset NFA state represented by the current DFA state,
+     *         return {@code true}, otherwise return {@code false}.
+     * @throws NullPointerException if {@code nfaState} is {@code null}
+     */
+    public boolean isEquivalent(Set<NFAState<T>> nfaStates) {
         return Stream.concat(
                 correspondNFASubset.stream(),
                 Optional.ofNullable(nfaStates).orElseThrow(NullPointerException::new).stream())
@@ -43,6 +67,15 @@ public class DFAState<T> {
                 .noneMatch(result -> !result);
     }
 
+    /**
+     * set the state transfer for the current DFA, by given a symbol and target DFA state
+     * @param symbol transfer symbol
+     * @param dfaState target DFA state
+     * @return an reference to the current DFA state
+     * @throws NullPointerException if either {@code symbol} or {@code dfaState} is {@code null}
+     * @throws IllegalArgumentException if {@code symbol} has sigma transition in the alphabet
+     * @throws IllegalArgumentException if target DFA state is not belong to the same DFA as the current DFA state
+     */
     public DFAState<T> setStateTransfer(T symbol, DFAState<T> dfaState) {
         if (symbol == null || dfaState == null) throw new NullPointerException();
         if (alphabet.getCodeBySymbol(symbol).equals(alphabet.sigmaTransitionCode)) throw new IllegalArgumentException();
@@ -51,20 +84,32 @@ public class DFAState<T> {
         return this;
     }
 
+    /**
+     * set the state transfer for sigma transition, by given a target DFA state
+     * @param dfaState target DFA state
+     * @return an reference to the current DFA state
+     * @throws NullPointerException if {@code dfaState} is {@code null}
+     * @throws IllegalArgumentException if target DFA state is not belong to the same DFA as the current DFA state
+     */
     public DFAState<T> setSigmaTransfer(DFAState<T> dfaState) {
-        stateTransferMap.put(alphabet.sigmaTransitionCode, Optional
-                .ofNullable(dfaState)
-                .orElseThrow(NullPointerException::new)
-        );
+        if (dfaState == null) throw new NullPointerException();
+        if (!parentDFA.hasState(dfaState)) throw new IllegalArgumentException();
+        stateTransferMap.put(alphabet.sigmaTransitionCode, dfaState);
         return this;
     }
 
+    /**
+     * @return the set of NFA states represent by the current DFA state
+     */
     public Set<NFAState<T>> getCorrespondNFASubset() {
         Set<NFAState<T>> retSet = new HashSet<>();
         retSet.addAll(correspondNFASubset);
         return retSet;
     }
 
+    /**
+     * @return return the state name of current DFA state
+     */
     public Object getStateName() {
         return stateName;
     }
