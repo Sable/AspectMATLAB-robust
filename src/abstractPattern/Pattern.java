@@ -7,6 +7,7 @@ import abstractPattern.modifier.Modifier;
 import abstractPattern.primitive.Primitive;
 import ast.ASTNode;
 import ast.Expr;
+import joinpoint.AMSourceCodePos;
 
 import java.util.Optional;
 
@@ -56,6 +57,12 @@ public abstract class Pattern{
     @Deprecated
     public ASTNode getPatternAST() {
         return this.originalPattern;
+    }
+
+    /** @return an abstraction on the postion of such pattern in source code. */
+    @SuppressWarnings("deprecation")
+    public AMSourceCodePos getSourceCodePosition() {
+        return new AMSourceCodePos(startLineNumber, startColumnNumber, enclosingFilename);
     }
 
     /**

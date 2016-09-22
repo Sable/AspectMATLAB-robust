@@ -3,6 +3,7 @@ import matcher.*;
 import matcher.dfa.DFA;
 import matcher.nfa.NFA;
 import matcher.nfa.NFABuilder;
+import matcher.nfa.NFAState;
 import natlab.DecIntNumericLiteralValue;
 import utils.LiteralBuilder;
 
@@ -11,29 +12,36 @@ import java.util.stream.IntStream;
 
 public class Main {
     public static void main(String args[]) {
-        Alphabet<Integer, String> alphabet = new Alphabet<>(
-                IntStream.iterate(2, x -> x + 1).iterator(),
-                new Integer(0),
-                new Integer(1)
-        );
+        Alphabet<Integer, Character> alphabet = new Alphabet(IntStream.iterate(2, x -> x + 1).iterator(), 0, 1);
+        alphabet.addSymbol('a');
+        alphabet.addSymbol('b');
+        alphabet.addSymbol('c');
 
-        System.out.println(alphabet.toMATLABFunction(
-                ((expr, symbol) ->
-                        new ParameterizedExpr(new NameExpr(new Name("isa")), new List<>(expr, new StringLiteralExpr
-                                (symbol)))),
-                symbolCode -> new IntLiteralExpr(new DecIntNumericLiteralValue(symbolCode.toString())),
-                "alphabetFunc",
-                IntStream.iterate(1, x -> x + 1).mapToObj(x -> String.format("AM_VAR_%d", x)).iterator()
-        ).getPrettyPrinted());
+        NFA<Character> nfa = new NFA<>(alphabet);
+        NFAState<Character> state1 = nfa.newState();
+        NFAState<Character> state2 = nfa.newState();
+        NFAState<Character> state3 = nfa.newState();
+        NFAState<Character> state4 = nfa.newState();
 
-        NFA<String> nfa = NFABuilder.fromTypeSignatureList(
-                new LiteralBuilder<String>().put("..").asList(),
-                alphabet
-        );
+        state1.addStateTransfer('a', state1);
+        state1.addStateTransfer('b', state1);
+        state1.addStateTransfer('c', state1);
+        state1.addStateTransfer('a', state2);
 
-        System.out.println(nfa);
-        DFA<String> dfa = new DFA<>(nfa);
+        state2.addStateTransfer('b', state3);
+        state2.addEpsilonStateTransfer(state3);
 
-        System.out.println(dfa);
+        state3.addStateTransfer('a', state4);
+
+        state4.addStateTransfer('a', state4);
+        state4.addStateTransfer('b', state4);
+        state4.addStateTransfer('c', state4);
+
+        nfa.setStartingState(state1);
+        nfa.addAcceptingState(state4);
+
+        System.out.println(nfa.toString());
+
+        System.out.println(new DFA<Character>(nfa));
     }
 }
