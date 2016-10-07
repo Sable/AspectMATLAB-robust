@@ -1,9 +1,8 @@
 package matcher.nfa;
 
-import matcher.Alphabet;
+import matcher.MATLABAlphabet;
 
 import java.util.Optional;
-import java.util.stream.IntStream;
 
 public final class NFABuilder {
     /**
@@ -15,9 +14,9 @@ public final class NFABuilder {
      * @throws IllegalArgumentException if any part of shape signature is {@code null} or is not a valid signature
      *                                  candidate.
      */
-    public static NFA<Integer> fromShapeSignatureList(Iterable<String> shapeSignature, Alphabet<?, Integer> alphabet) {
+    public static MATLABNFA<Integer> fromShapeSignatureList(Iterable<String> shapeSignature, MATLABAlphabet<Integer> alphabet) {
         if (alphabet == null) throw new NullPointerException();
-        NFA<Integer> returnNFA = new NFA<>(alphabet);
+        MATLABNFA<Integer> returnNFA = new MATLABNFA<>(alphabet);
         NFAState<Integer> previousState = returnNFA.newState();
         returnNFA.setStartingState(previousState);
         for (String signature : Optional.ofNullable(shapeSignature).orElseThrow(NullPointerException::new)) {
@@ -73,8 +72,8 @@ public final class NFABuilder {
      * @throws IllegalArgumentException if any part of shape signature is {@code null} or is not a valid signature
      *                                  candidate.
      */
-    public static NFA<Integer> fromShapeSignatureList(Iterable<String> shapeSignature) {
-        Alphabet<Integer, Integer> alphabet = new Alphabet<>(IntStream.iterate(2, x -> x + 1).iterator(), 0, 1);
+    public static MATLABNFA<Integer> fromShapeSignatureList(Iterable<String> shapeSignature) {
+        MATLABAlphabet<Integer> alphabet = new MATLABAlphabet<>();
         for (String signature : Optional.ofNullable(shapeSignature).orElseThrow(NullPointerException::new)) {
             if (signature == null) throw new IllegalArgumentException();
             try {
@@ -98,9 +97,9 @@ public final class NFABuilder {
      * @throws IllegalArgumentException if any part of type signature is {@code null} or is not a valid signature
      *                                  candidate.
      */
-    public static NFA<String> fromTypeSignatureList(Iterable<String> typeSignature, Alphabet<?, String> alphabet) {
+    public static MATLABNFA<String> fromTypeSignatureList(Iterable<String> typeSignature, MATLABAlphabet<String> alphabet) {
         if (alphabet == null) throw new NullPointerException();
-        NFA<String> returnNFA = new NFA<>(alphabet);
+        MATLABNFA<String> returnNFA = new MATLABNFA<>(alphabet);
         NFAState<String> previousState = returnNFA.newState();
         returnNFA.setStartingState(previousState);
         for (String signature : Optional.ofNullable(typeSignature).orElseThrow(NullPointerException::new)) {
@@ -152,7 +151,7 @@ public final class NFABuilder {
      *                                  candidate.
      */
     public static NFA<String> fromTypeSignatureList(Iterable<String> typeSignature) {
-        Alphabet<Integer, String> alphabet = new Alphabet<>(IntStream.iterate(2, x -> x + 1).iterator(), 0, 1);
+        MATLABAlphabet<String> alphabet = new MATLABAlphabet<>();
         for (String signature : Optional.ofNullable(typeSignature).orElseThrow(NullPointerException::new)) {
             if (signature == null) throw new IllegalArgumentException();
             if (!("..".equals(signature) || "*".equals(signature))) alphabet.addSymbol(signature);

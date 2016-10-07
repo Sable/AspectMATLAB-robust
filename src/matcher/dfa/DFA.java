@@ -142,6 +142,29 @@ public class DFA<T> {
         return stateSet.contains(state);
     }
 
+    /**
+     * @return set of states within the DFA
+     */
+    public Set<DFAState<T>> getStateSet() {
+        return this.stateSet;
+    }
+
+    /**
+     * @return set of accepting states within the DFA
+     */
+    public Set<DFAState<T>> getAcceptingStateSet() {
+        Set<DFAState<T>> returnSet = new HashSet<>();
+        acceptingState.forEach(returnSet::add);
+        return returnSet;
+    }
+
+    /**
+     * @return the starting state of the current DFA, if it is not set, {@code null} will be returned.
+     */
+    public DFAState<T> getStartingState() {
+        return startingState;
+    }
+
     @Override
     public String toString() {
         String statesToString = stateSet.toString();

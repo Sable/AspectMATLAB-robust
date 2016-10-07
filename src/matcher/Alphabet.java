@@ -1,12 +1,12 @@
 package matcher;
 
-import ast.*;
 import utils.LiteralBuilder;
 import utils.UniqueMap;
 
-import java.util.*;
-import java.util.function.BiFunction;
-import java.util.function.Function;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -88,91 +88,6 @@ public class Alphabet<K, V> {
      */
     public Map<K, V> toMap() {
         return alphabetMap.clone();
-    }
-
-    /**
-     * generate a MATLAB function corresponding to the current alphabet. <br>
-     * if alphabet is non-trivial (i.e. containing at least of symbol other than sigma transition or epsilon
-     * transition). It will generate function as following:
-     * <pre><code>
-     *  function {outvar = variableNamespace.next()} = {functionName}({invar = variableNamespace.next()})
-     *      if {matcher.accept(invar, symbol)}
-     *          {outvar} = {handler.accept(symbolCode)};
-     *      elseif ...
-     *      else
-     *          {outvar} = {handler.accept(sigmaTransitionCode)};
-     *      end
-     *  end
-     * </code></pre>
-     * if alphabet is trivial. It will simply generate function as:
-     * <pre><code>
-     *  function {outvar = variableNamespace.next()} = {functionName}({invar = variableNamespace.next()})
-     *      {outvar} = {handler.accept(sigmaTransitionCode)};
-     *  end
-     * </code></pre>
-     * @param matcher A function takes a input variable name expr and a symbol in the alphabet, and return a MATLAB
-     *                expression determine if the input variable match to the symbol.
-     * @param handler A function takes a input of symbol code and return a MATLAB expression that represent symbol
-     *                code in MATLAB
-     * @param functionName function name of the matcher function
-     * @param variableNamespace pool of variable names
-     * @return a MATLAB function corresponding to current alphabet
-     * @throws NullPointerException if any of {@code mathcer}, {@code handler}, {@code functionName} or
-     *                              {@code variableNamespace} is {@code null}.
-     * @throws IllegalArgumentException if {@code matcher} or {@code handler} returns {@code null}.
-     */
-    public ast.Function toMATLABFunction(BiFunction<Expr, V, Expr> matcher, Function<K, Expr> handler,
-                                         String functionName, Iterator<String> variableNamespace) {
-        String outputVarName = Optional.ofNullable(variableNamespace.next()).orElseThrow(NullPointerException::new);
-        String inputVarName = Optional.ofNullable(variableNamespace.next()).orElseThrow(NullPointerException::new);
-
-        ast.Function returnFunction = new ast.Function();
-        returnFunction.setName(new Name(Optional.ofNullable(functionName).orElseThrow(NullPointerException::new)));
-        returnFunction.addInputParam(new Name(inputVarName));
-        returnFunction.addOutputParam(new Name(outputVarName));
-
-        Set<IfBlock> classifyBlockSet = new HashSet<>();
-        for (V symbol : alphabetMap.values()) {
-            Expr matcherExpr = Optional
-                    .ofNullable(matcher.apply(new NameExpr(new Name(inputVarName)), symbol))
-                    .orElseThrow(IllegalArgumentException::new);
-            Expr handlerExpr = Optional
-                    .ofNullable(handler.apply(alphabetMap.getInverse(symbol)))
-                    .orElseThrow(IllegalArgumentException::new);
-            IfBlock appendingClassifyBlock = new IfBlock();
-            appendingClassifyBlock.setCondition(matcherExpr);
-
-            AssignStmt handlerAssign = new AssignStmt();
-            handlerAssign.setLHS(new NameExpr(new Name(outputVarName)));
-            handlerAssign.setRHS(handlerExpr);
-            handlerAssign.setOutputSuppressed(true);
-            appendingClassifyBlock.addStmt(handlerAssign);
-
-            classifyBlockSet.add(appendingClassifyBlock);
-        }
-        Expr sigmaHandler = Optional
-                .ofNullable(handler.apply(sigmaTransitionCode))
-                .orElseThrow(IllegalArgumentException::new);
-        if (classifyBlockSet.isEmpty()) {
-            AssignStmt sigmaAssign = new AssignStmt();
-            sigmaAssign.setLHS(new NameExpr(new Name(outputVarName)));
-            sigmaAssign.setRHS(sigmaHandler);
-            sigmaAssign.setOutputSuppressed(true);
-            returnFunction.addStmt(sigmaAssign);
-        } else {
-            ElseBlock sigmaHandlingBlock = new ElseBlock();
-            AssignStmt sigmaAssign = new AssignStmt();
-            sigmaAssign.setLHS(new NameExpr(new Name(outputVarName)));
-            sigmaAssign.setRHS(sigmaHandler);
-            sigmaAssign.setOutputSuppressed(true);
-            sigmaHandlingBlock.addStmt(sigmaAssign);
-
-            IfStmt classifyStmt = new IfStmt();
-            classifyBlockSet.forEach(classifyStmt::addIfBlock);
-            classifyStmt.setElseBlock(sigmaHandlingBlock);
-            returnFunction.addStmt(classifyStmt);
-        }
-        return returnFunction;
     }
 
     @Override

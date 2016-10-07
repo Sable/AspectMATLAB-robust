@@ -114,6 +114,30 @@ public class DFAState<T> {
         return stateName;
     }
 
+    /**
+     * get the target state from current state via a given symbol in alphabet
+     * @param symbol the given symbol
+     * @return the target state
+     * @throws NullPointerException if {@code symbol} is {@code null}
+     * @throws IllegalArgumentException if {@code symbol} does not have any target state
+     */
+    public DFAState<T> getStateTransfer(T symbol) {
+        Object symbolCode = alphabet.getCodeBySymbol(symbol);
+        return Optional.ofNullable(
+                this.stateTransferMap.get(Optional.ofNullable(symbolCode).orElseThrow(NullPointerException::new))
+        ).orElseThrow(IllegalArgumentException::new);
+    }
+
+
+    /**
+     * get the sigma transition state form the current node, if current state do not have a sigma transition state,
+     * it will return {@code null}
+     * @return the target state
+     */
+    public DFAState<T> getSigmaTransfer() {
+        return this.stateTransferMap.get(alphabet.sigmaTransitionCode);
+    }
+
     @Override
     public String toString() {
         String nameToString = stateName.toString();

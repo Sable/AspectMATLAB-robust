@@ -1,10 +1,12 @@
 package abstractPattern;
 
 import abstractPattern.utils.ContentExposureType;
+import abstractPattern.utils.WeaveType;
 import ast.Expr;
 import ast.Function;
 import ast.List;
 import ast.Stmt;
+import joinpoint.AMSourceCodePos;
 import utils.CompilationInfo;
 
 import java.util.HashSet;
@@ -21,6 +23,8 @@ public final class Action {
     private final Set<Function> nestedFunctionSet = new HashSet<>();
     private final List<Stmt> statementList = new List<>();
     private final Set<ContentExposureType> contentExposures = new HashSet<>();
+    private final WeaveType weaveType;
+    private final String name;
 
     public Action(ast.Action action, CompilationInfo compilationInfo) {
         startLineNumber = Optional.ofNullable(action).orElseThrow(NullPointerException::new).getStartLine();
@@ -37,5 +41,19 @@ public final class Action {
         Optional.ofNullable(action.getInputParamList())
                 .orElseGet(List::new)
                 .forEach(selector -> contentExposures.add(ContentExposureType.valueOf(selector)));
+
+        //TODO
+        weaveType = null;
+        name =null;
+    }
+
+    @SuppressWarnings("deprecation")
+    public AMSourceCodePos getSourceCodePosition() {
+        return new AMSourceCodePos(startLineNumber, startColumnNumber, enclosingFilename);
+    }
+
+    @Override
+    public String toString() {
+        return super.toString(); //TODO
     }
 }
