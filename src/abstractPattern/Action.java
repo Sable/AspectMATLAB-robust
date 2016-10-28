@@ -2,13 +2,11 @@ package abstractPattern;
 
 import abstractPattern.utils.ContentExposureType;
 import abstractPattern.utils.WeaveType;
-import ast.Expr;
-import ast.Function;
-import ast.List;
-import ast.Stmt;
+import ast.*;
 import joinpoint.AMSourceCodePos;
 import utils.CompilationInfo;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -26,14 +24,17 @@ public final class Action {
     private final WeaveType weaveType;
     private final String name;
 
-    public Action(ast.Action action, CompilationInfo compilationInfo) {
+    public Action(ast.Action action, HashMap<String, Expr> predefinedPattern, CompilationInfo compilationInfo) {
         startLineNumber = Optional.ofNullable(action).orElseThrow(NullPointerException::new).getStartLine();
         startColumnNumber = Optional.ofNullable(action).orElseThrow(NullPointerException::new).getStartColumn();
         enclosingFilename = Optional
                 .ofNullable(compilationInfo)
                 .orElseThrow(NullPointerException::new)
-                .getASTNodeFile(action);
+                .getASTNodeEnclosingFile(action);
         Expr pattenExpression = Optional.ofNullable(action.getExpr()).orElseThrow(IllegalArgumentException::new);
+
+
+
         pattern = Pattern.buildAbstractPattern(pattenExpression, enclosingFilename);
 
         Optional.ofNullable(action.getNestedFunctionList()).orElseGet(List::new).forEach(nestedFunctionSet::add);
@@ -44,7 +45,7 @@ public final class Action {
 
         //TODO
         weaveType = null;
-        name =null;
+        name = null;
     }
 
     @SuppressWarnings("deprecation")

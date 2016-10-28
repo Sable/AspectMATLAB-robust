@@ -77,9 +77,9 @@ public enum PatternTypeAnalysis {
     }
 
     /**
-     * Or case handler in pattern type analysis, use following merge strategy: <br>
+     * OrTransformer case handler in pattern type analysis, use following merge strategy: <br>
      * <pre><code>
-     * Or        | Primitive | Modifier | Invalid
+     * OrTransformer        | Primitive | Modifier | Invalid
      * ----------+-----------+----------+--------
      * Primitive | Primitive | Invalid  | Invalid
      * Modifier  | Invalid   | Modifier | Invalid

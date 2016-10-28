@@ -3,5 +3,5 @@ package utils;
 import ast.ASTNode;
 
 public interface CompilationInfo {
-    String getASTNodeFile(ASTNode astNode);
+    String getASTNodeEnclosingFile(ASTNode astNode);
 }
