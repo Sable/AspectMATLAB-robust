@@ -11,7 +11,7 @@ import joinpoint.AMSourceCodePos;
 
 import java.util.Optional;
 
-/** a abstract representation on the pattern */
+/** a abstract representation on the patternExpand */
 public abstract class Pattern{
     protected final int startColumnNumber;
     protected final int startLineNumber;
@@ -35,43 +35,43 @@ public abstract class Pattern{
         this.enclosingFilename = Optional.ofNullable(enclosingFilename).orElseThrow(NullPointerException::new);
     }
 
-    /** @return the start column number for the pattern */
+    /** @return the start column number for the patternExpand */
     public int getStartColumnNumber() {
         return this.startColumnNumber;
     }
 
-    /** @return the start line number for the pattern */
+    /** @return the start line number for the patternExpand */
     public int getStartLineNumber() {
         return this.startLineNumber;
     }
 
-    /** @return the enclosing filename for the pattern */
+    /** @return the enclosing filename for the patternExpand */
     public String getEnclosingFilename() {
         return this.enclosingFilename;
     }
 
-    /** @return report of checking the structure of the pattern */
+    /** @return report of checking the structure of the patternExpand */
     public abstract IReport getStructureValidationReport();
 
-    /** @return the AST representation of the pattern */
+    /** @return the AST representation of the patternExpand */
     @Deprecated
     public ASTNode getPatternAST() {
         return this.originalPattern;
     }
 
-    /** @return an abstraction on the postion of such pattern in source code. */
+    /** @return an abstraction on the postion of such patternExpand in source code. */
     @SuppressWarnings("deprecation")
     public AMSourceCodePos getSourceCodePosition() {
         return new AMSourceCodePos(startLineNumber, startColumnNumber, enclosingFilename);
     }
 
     /**
-     * construct abstract pattern from pattern expression
-     * @param patternExpression pattern expression
+     * construct abstract patternExpand from patternExpand expression
+     * @param patternExpression patternExpand expression
      * @param enclosingFilename enclosing aspect file path
-     * @return constructed abstract pattern
+     * @return constructed abstract patternExpand
      * @throws NullPointerException if {@code patternExpression} is {@code null}
-     * @throws IllegalArgumentException if {@code patternExpression} is not a valid pattern expression, see:
+     * @throws IllegalArgumentException if {@code patternExpression} is not a valid patternExpand expression, see:
      *                                  {@link abstractPattern.analysis.PatternType#isPatternExpression(ASTNode)}
      * @throws IllegalArgumentException if {@code patternExpression} resolve as
      *                                  {@link abstractPattern.analysis.PatternTypeAnalysis#Invalid} from

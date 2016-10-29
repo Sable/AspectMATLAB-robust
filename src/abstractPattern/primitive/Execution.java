@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-/** an abstract representation on the execution pattern */
+/** an abstract representation on the execution patternExpand */
 public final class Execution extends Primitive {
     private final String identifier;
     private final List<FullSignature> inputSignatureList = new LinkedList<>();
@@ -20,7 +20,7 @@ public final class Execution extends Primitive {
      * empty signature list as default, which match to exactly zero output values.
      * @param patternExecution {@link PatternExecution} AST node
      * @param enclosingFilename enclosing aspect file path
-     * @throws IllegalArgumentException if the call pattern do have a identifier name signature
+     * @throws IllegalArgumentException if the call patternExpand do have a identifier name signature
      */
     @Deprecated
     @SuppressWarnings("deprecation")
@@ -42,7 +42,7 @@ public final class Execution extends Primitive {
     }
 
     /**
-     * perform a structural weeding on execution pattern, it will:
+     * perform a structural weeding on execution patternExpand, it will:
      * <ul>
      *     <li>merging structural weeding result from input signatures,</li>
      *     <li>merging structural weeding result from output signatures,</li>
@@ -63,7 +63,7 @@ public final class Execution extends Primitive {
             report.AddError(
                     enclosingFilename,
                     startLineNumber, startColumnNumber,
-                    "wildcard [..] is not a valid matcher in execution pattern for identifier name, use [*] instead"
+                    "wildcard [..] is not a valid matcher in execution patternExpand for identifier name, use [*] instead"
             );
         }
         return report;

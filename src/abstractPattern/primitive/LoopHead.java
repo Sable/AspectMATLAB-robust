@@ -8,14 +8,14 @@ import ast.PatternLoopHead;
 
 import java.util.Optional;
 
-/** an abstract representation on the loop head pattern */
+/** an abstract representation on the loop head patternExpand */
 public final class LoopHead extends Primitive {
     private final LoopType loopType;
     private final String identifier;
 
     /**
-     * construct from {@link PatternLoopHead} AST node. If the loop pattern do not provide a loop type signature, the
-     * pattern will automatically resolve it as a star[*] wildcard.
+     * construct from {@link PatternLoopHead} AST node. If the loop patternExpand do not provide a loop type signature, the
+     * patternExpand will automatically resolve it as a star[*] wildcard.
      * @param patternLoopHead {@link PatternLoopHead} AST node
      * @param enclosingFilename enclosing aspect file path
      * @throws IllegalArgumentException if {@code patternLoopHead} do not have a loop name signature
@@ -37,10 +37,10 @@ public final class LoopHead extends Primitive {
     }
 
     /**
-     * perform structural weeding on the loop head pattern, it will:
+     * perform structural weeding on the loop head patternExpand, it will:
      * <ul>
-     *     <li>raise error if the pattern type signature use {@code [..]} wildcard,</li>
-     *     <li>raise error if the pattern name signature use {@code [..]} wildcard</li>
+     *     <li>raise error if the patternExpand type signature use {@code [..]} wildcard,</li>
+     *     <li>raise error if the patternExpand name signature use {@code [..]} wildcard</li>
      * </ul>
      * @return structural weeding report
      */
@@ -52,14 +52,14 @@ public final class LoopHead extends Primitive {
             report.AddError(
                     enclosingFilename,
                     startLineNumber, startColumnNumber,
-                    "wildcard [..] is not a valid matcher in loop head pattern for loop type, use [*] instead"
+                    "wildcard [..] is not a valid matcher in loop head patternExpand for loop type, use [*] instead"
             );
         }
         if ("..".equals(identifier)) {
             report.AddError(
                     enclosingFilename,
                     startLineNumber, startColumnNumber,
-                    "wildcard [..] is not a valid matcher in loop head pattern for loop name, use [*] instead"
+                    "wildcard [..] is not a valid matcher in loop head patternExpand for loop name, use [*] instead"
             );
         }
         return report;

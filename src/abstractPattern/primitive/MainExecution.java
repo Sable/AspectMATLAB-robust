@@ -4,7 +4,7 @@ import Matlab.Utils.IReport;
 import Matlab.Utils.Report;
 import ast.PatternMainExecution;
 
-/** an abstract representation on the main execution pattern */
+/** an abstract representation on the main execution patternExpand */
 public final class MainExecution extends Primitive {
     /**
      * construct from {@link PatternMainExecution} AST node.
@@ -18,7 +18,7 @@ public final class MainExecution extends Primitive {
     }
 
     /**
-     * perform structural weeding on main execution pattern, it will also return a report saying such pattern is valid
+     * perform structural weeding on main execution patternExpand, it will also return a report saying such patternExpand is valid
      * @return structural weeding reprot
      */
     @Override

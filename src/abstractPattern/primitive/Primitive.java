@@ -6,17 +6,18 @@ import abstractPattern.analysis.PatternTypeAnalysis;
 import abstractPattern.modifier.Modifier;
 import abstractPattern.modifier.ModifierAnd;
 import ast.*;
+import transformer.TransformQueryEnv;
 
 import java.util.*;
 
-/** an abstract representation on the primitive pattern */
+/** an abstract representation on the primitive patternExpand */
 public abstract class Primitive extends Pattern {
     protected final java.util.List<Modifier> modifierList = new LinkedList<>();
 
     /**
-     * @param primitiveExpr primitive pattern expression from parser
+     * @param primitiveExpr primitive patternExpand expression from parser
      * @param enclosingFilename enclosing aspect file name
-     * @throws IllegalArgumentException if {@code primitiveExpr} is not a primitive pattern */
+     * @throws IllegalArgumentException if {@code primitiveExpr} is not a primitive patternExpand */
     @Deprecated
     @SuppressWarnings("deprecation")
     public Primitive(Expr primitiveExpr, String enclosingFilename) {
@@ -24,9 +25,9 @@ public abstract class Primitive extends Pattern {
     }
 
     /**
-     * applying modifier pattern to this primitive pattern
+     * applying modifier patternExpand to this primitive patternExpand
      * @param modifier {@link Modifier} modifier patterns
-     * @return reference to this primitive pattern
+     * @return reference to this primitive patternExpand
      * @throws NullPointerException if {@code modifier} is {@code null}
      */
     public Primitive addModifier(Modifier modifier) {
@@ -42,7 +43,7 @@ public abstract class Primitive extends Pattern {
 
     /**
      * wrap the pretty printed modifier list
-     * @param primitivePatternString pretty printed primitive pattern
+     * @param primitivePatternString pretty printed primitive patternExpand
      * @return wrapped pretty printed result
      * @throws NullPointerException if {@code primitivePatternString} is {@code null}
      */
@@ -59,12 +60,12 @@ public abstract class Primitive extends Pattern {
     }
 
     /**
-     * build abstract primitive pattern from pattern expression
-     * @param patternExpression pattern expression
+     * build abstract primitive patternExpand from patternExpand expression
+     * @param patternExpression patternExpand expression
      * @param enclosingFilename enclosing aspect file path
-     * @return constructed abstract primitive pattern
+     * @return constructed abstract primitive patternExpand
      * @throws NullPointerException if {@code patternExpression} is {@code null}
-     * @throws IllegalArgumentException if {@code patternExpression} is not a pattern expression
+     * @throws IllegalArgumentException if {@code patternExpression} is not a patternExpand expression
      * @throws IllegalArgumentException if {@code patternExpression} do not resolve as {@code Primitive} from
      *                                  {@link abstractPattern.analysis.PatternTypeAnalysis#analyze(Expr)}
      */
@@ -140,4 +141,12 @@ public abstract class Primitive extends Pattern {
         /* control flow should not reach here */
         throw new AssertionError();
     }
+
+    /**
+     * determine if a given AST node is possible a join point for current pattern.
+     * @param astNode           The given AST node
+     * @param transformQueryEnv Transforming environment
+     * @return {@code true} if AST node is possible a join point, otherwise {@code false}.
+     */
+    public abstract boolean isPossibleJoinPoint(ASTNode astNode, TransformQueryEnv transformQueryEnv);
 }

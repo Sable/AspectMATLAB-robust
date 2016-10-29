@@ -1,18 +1,19 @@
-package transformer.pattern;
+package transformer.patternExpand;
 
 import ast.Expr;
 import ast.OrExpr;
+import transformer.UnboundedIdentifier;
 
 import java.util.Map;
 
-public final class OrTransformer extends PatternTransformer {
-    private final PatternTransformer lhsTransformer;
-    private final PatternTransformer rhsTransformer;
+public final class PatternOrTrans extends PatternTrans {
+    private final PatternTrans lhsTransformer;
+    private final PatternTrans rhsTransformer;
 
-    public OrTransformer(OrExpr orExpr, Map<String, Expr> predefinedPattern) {
+    public PatternOrTrans(OrExpr orExpr, Map<String, Expr> predefinedPattern) {
         super(orExpr, predefinedPattern);
-        lhsTransformer = PatternTransformer.buildPatternTransformer(orExpr.getLHS(), predefinedPattern);
-        rhsTransformer = PatternTransformer.buildPatternTransformer(orExpr.getRHS(), predefinedPattern);
+        lhsTransformer = PatternTrans.buildPatternTransformer(orExpr.getLHS(), predefinedPattern);
+        rhsTransformer = PatternTrans.buildPatternTransformer(orExpr.getRHS(), predefinedPattern);
     }
 
     @Override
@@ -26,7 +27,7 @@ public final class OrTransformer extends PatternTransformer {
     }
 
     @Override
-    public Expr copyAndTransform() {
+    public Expr copyAndTransform() throws UnboundedIdentifier {
         Expr lhsTransform = lhsTransformer.copyAndTransform();
         Expr rhsTransform = rhsTransformer.copyAndTransform();
         OrExpr copiedOrExpr = (OrExpr) pattern.copy();

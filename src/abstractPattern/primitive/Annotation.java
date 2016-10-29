@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-/** an abstract representation on the annotation pattern */
+/** an abstract representation on the annotation patternExpand */
 public final class Annotation extends Primitive {
     private final List<AnnotationSelector> selectorList = new LinkedList<>();
     private final String identifier;
@@ -41,7 +41,7 @@ public final class Annotation extends Primitive {
     }
 
     /**
-     * perform a structural weeding on annotation pattern, it will:
+     * perform a structural weeding on annotation patternExpand, it will:
      * <ul>
      *     <li>merge structural weeding report from selectors,</li>
      *     <li>raise error if annotation identifier signature use [..] wildcard</li>
@@ -56,7 +56,7 @@ public final class Annotation extends Primitive {
             report.AddError(
                     enclosingFilename,
                     startLineNumber, startColumnNumber,
-                    "wildcard [..] is not a valid matcher in annotation pattern for annotation name, use [*] instead"
+                    "wildcard [..] is not a valid matcher in annotation patternExpand for annotation name, use [*] instead"
             );
         }
         return report;

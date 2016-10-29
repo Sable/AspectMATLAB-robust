@@ -42,7 +42,7 @@ public final class ShapeSignature extends Pattern implements Iterable<String> {
     }
 
     /**
-     * determine if a shape signature is trivial (i.e. no additional runtime checking is required, the pattern will
+     * determine if a shape signature is trivial (i.e. no additional runtime checking is required, the patternExpand will
      * match to any matrix shape).
      * @return {@code true} if the shape signature is trivial, otherwise return {@code false}
      */
@@ -51,9 +51,9 @@ public final class ShapeSignature extends Pattern implements Iterable<String> {
     }
 
     /**
-     * perform a structure weeding on the shape pattern, it will:
+     * perform a structure weeding on the shape patternExpand, it will:
      * <ul>
-     *     <li> raise warning on redundant pattern such as {@code [.., ..]}</li>
+     *     <li> raise warning on redundant patternExpand such as {@code [.., ..]}</li>
      * </ul>
      * @return the structure validation report
      */
@@ -74,7 +74,7 @@ public final class ShapeSignature extends Pattern implements Iterable<String> {
                             enclosingFilename,
                             signatureName.getStartLine(),
                             signatureName.getEndColumn(),
-                            "redundant pattern, using [..] instead of [.., ..]"
+                            "redundant patternExpand, using [..] instead of [.., ..]"
                     );
                     report.Add(redundantWarning);
                 }

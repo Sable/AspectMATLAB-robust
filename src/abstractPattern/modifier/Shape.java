@@ -7,7 +7,7 @@ import utils.MergableHashSet;
 
 import java.util.Optional;
 
-/** a abstract representation on the shape pattern */
+/** a abstract representation on the shape patternExpand */
 public final class Shape extends Modifier {
     private final ShapeSignature shapeSignature;
 
@@ -31,7 +31,7 @@ public final class Shape extends Modifier {
     }
 
     /**
-     * the structural weeding report on the shape pattern, it will simply return the weeding report on the shape
+     * the structural weeding report on the shape patternExpand, it will simply return the weeding report on the shape
      * signature.
      * @return  the structural weeding report */
     @Override
@@ -41,7 +41,7 @@ public final class Shape extends Modifier {
 
     /**
      * @see Modifier#getModifierTypeSet()
-     * @return a set contains the java class signature for the current modifier pattern
+     * @return a set contains the java class signature for the current modifier patternExpand
      */
     @Override
     public MergableHashSet<Class<? extends Modifier>> getModifierTypeSet() {

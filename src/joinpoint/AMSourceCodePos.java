@@ -23,7 +23,7 @@ public final class AMSourceCodePos {
         enclosingFilepath = Optional
                 .ofNullable(compilationInfo)
                 .orElseThrow(NullPointerException::new)
-                .getASTNodeFile(astNode);
+                .getASTNodeEnclosingFile(astNode);
     }
 
     /**

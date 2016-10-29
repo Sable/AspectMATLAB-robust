@@ -12,16 +12,16 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-/** an abstract representation on or operation between to primitive pattern */
+/** an abstract representation on or operation between to primitive patternExpand */
 public final class PrimitiveOr extends Primitive {
     private final Primitive lhsPrimitive;
     private final Primitive rhsPrimitive;
 
     /**
-     * construct or modifier by specific left hand side and right hand side primitive pattern, the constructor will
+     * construct or modifier by specific left hand side and right hand side primitive patternExpand, the constructor will
      * construct its own {@link OrExpr} AST node.
-     * @param lhs left hand side {@link Primitive} pattern
-     * @param rhs right hand side {@link Primitive} pattern
+     * @param lhs left hand side {@link Primitive} patternExpand
+     * @param rhs right hand side {@link Primitive} patternExpand
      * @param enclosingFilename enclosing aspect file path
      * @throws NullPointerException if {@code lhs} or {@code rhs} is {@code null}
      */
@@ -56,9 +56,9 @@ public final class PrimitiveOr extends Primitive {
     }
 
     /**
-     * apply modifier to both side of the or primitive pattern
+     * apply modifier to both side of the or primitive patternExpand
      * @param modifier {@link Modifier} modifier patterns
-     * @return an reference to this or pattern
+     * @return an reference to this or patternExpand
      * @throws NullPointerException if {@code modifier} is {@code null}
      */
     @Override

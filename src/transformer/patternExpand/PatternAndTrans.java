@@ -1,19 +1,20 @@
-package transformer.pattern;
+package transformer.patternExpand;
 
 import ast.AndExpr;
 import ast.Expr;
+import transformer.UnboundedIdentifier;
 
 import java.util.Map;
 
-public final class AndTransformer extends PatternTransformer {
-    private final PatternTransformer lhsTransformer;
-    private final PatternTransformer rhsTransformer;
+public final class PatternAndTrans extends PatternTrans {
+    private final PatternTrans lhsTransformer;
+    private final PatternTrans rhsTransformer;
 
-    public AndTransformer(AndExpr andExpr, Map<String, Expr> predefinedPattern) {
+    public PatternAndTrans(AndExpr andExpr, Map<String, Expr> predefinedPattern) {
         super(andExpr, predefinedPattern);
 
-        lhsTransformer = PatternTransformer.buildPatternTransformer(andExpr.getLHS(), predefinedPattern);
-        rhsTransformer = PatternTransformer.buildPatternTransformer(andExpr.getRHS(), predefinedPattern);
+        lhsTransformer = PatternTrans.buildPatternTransformer(andExpr.getLHS(), predefinedPattern);
+        rhsTransformer = PatternTrans.buildPatternTransformer(andExpr.getRHS(), predefinedPattern);
     }
 
     @Override
@@ -27,7 +28,7 @@ public final class AndTransformer extends PatternTransformer {
     }
 
     @Override
-    public Expr copyAndTransform() {
+    public Expr copyAndTransform() throws UnboundedIdentifier {
         Expr lhsTransform = lhsTransformer.copyAndTransform();
         Expr rhsTransform = rhsTransformer.copyAndTransform();
 

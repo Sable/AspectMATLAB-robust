@@ -26,7 +26,7 @@ public enum ScopeType {
 
     /**
      * parse scope type from AST identifier
-     * @param name the scope identifier in scope pattern
+     * @param name the scope identifier in scope patternExpand
      * @return {@code ScopeType} of such identifier
      * @throws IllegalArgumentException if such identifier is not a valid scope type
      * @throws NullPointerException if {@code name} is {@code null}

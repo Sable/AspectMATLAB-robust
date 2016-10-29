@@ -7,7 +7,7 @@ import utils.MergableHashSet;
 
 import java.util.Optional;
 
-/** a abstract representation on the type pattern */
+/** a abstract representation on the type patternExpand */
 public final class Type extends Modifier {
     private final TypeSignature typeSignature;
 
@@ -31,9 +31,9 @@ public final class Type extends Modifier {
     }
 
     /**
-     * preform a structural weeding on the type pattern, it will:
+     * preform a structural weeding on the type patternExpand, it will:
      * <ul>
-     *     <li>raise errors if the type pattern uses {@code [..]} wildcards</li>
+     *     <li>raise errors if the type patternExpand uses {@code [..]} wildcards</li>
      * </ul>
      * @return the structural wedding report
      */
@@ -44,7 +44,7 @@ public final class Type extends Modifier {
             retReport.AddError(
                     enclosingFilename,
                     startLineNumber, startColumnNumber,
-                    "wildcard [..] is not a valid matcher in type pattern for type name, use [*] instead"
+                    "wildcard [..] is not a valid matcher in type patternExpand for type name, use [*] instead"
             );
         }
         return retReport;
@@ -52,7 +52,7 @@ public final class Type extends Modifier {
 
     /**
      * @see Modifier#getModifierTypeSet()
-     * @return a set contains the java class signature for the current modifier pattern
+     * @return a set contains the java class signature for the current modifier patternExpand
      */
     @Override
     public MergableHashSet<Class<? extends Modifier>> getModifierTypeSet() {

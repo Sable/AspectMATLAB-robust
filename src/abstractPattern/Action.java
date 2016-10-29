@@ -4,6 +4,9 @@ import abstractPattern.utils.ContentExposureType;
 import abstractPattern.utils.WeaveType;
 import ast.*;
 import joinpoint.AMSourceCodePos;
+import transformer.UnboundedIdentifier;
+import transformer.patternExpand.PatternTrans;
+import transformer.patternExpand.PatternTypeTrans;
 import utils.CompilationInfo;
 
 import java.util.HashMap;
@@ -11,7 +14,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-/** a abstract representation on the pattern */
+/** a abstract representation on the patternExpand */
 public final class Action {
     private final Pattern pattern;
     private final int startLineNumber;
@@ -24,7 +27,8 @@ public final class Action {
     private final WeaveType weaveType;
     private final String name;
 
-    public Action(ast.Action action, HashMap<String, Expr> predefinedPattern, CompilationInfo compilationInfo) {
+    public Action(ast.Action action, HashMap<String, Expr> predefinedPattern, CompilationInfo compilationInfo)
+            throws UnboundedIdentifier{
         startLineNumber = Optional.ofNullable(action).orElseThrow(NullPointerException::new).getStartLine();
         startColumnNumber = Optional.ofNullable(action).orElseThrow(NullPointerException::new).getStartColumn();
         enclosingFilename = Optional
@@ -33,7 +37,8 @@ public final class Action {
                 .getASTNodeEnclosingFile(action);
         Expr pattenExpression = Optional.ofNullable(action.getExpr()).orElseThrow(IllegalArgumentException::new);
 
-
+        PatternTrans patternTrans = PatternTypeTrans.buildPatternTransformer(pattenExpression, predefinedPattern);
+        pattenExpression = patternTrans.copyAndTransform();
 
         pattern = Pattern.buildAbstractPattern(pattenExpression, enclosingFilename);
 
@@ -43,9 +48,8 @@ public final class Action {
                 .orElseGet(List::new)
                 .forEach(selector -> contentExposures.add(ContentExposureType.valueOf(selector)));
 
-        //TODO
-        weaveType = null;
-        name = null;
+        weaveType = WeaveType.fromString(action.getType());
+        name = action.getName();
     }
 
     @SuppressWarnings("deprecation")
@@ -53,8 +57,25 @@ public final class Action {
         return new AMSourceCodePos(startLineNumber, startColumnNumber, enclosingFilename);
     }
 
+    public Pattern getPattern() {
+        return pattern;
+    }
+
     @Override
     public String toString() {
-        return super.toString(); //TODO
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer
+                .append(name).append(" : ")
+                .append(weaveType.toString()).append(' ')
+                .append(pattern.toString()).append(" : ")
+                .append(contentExposures.toString()).append('\n');
+        for (Function function : nestedFunctionSet) {
+            stringBuffer.append(function.getPrettyPrinted()).append('\n');
+        }
+        for (Stmt stmt : statementList) {
+            stringBuffer.append(stmt.getPrettyPrinted()).append('\n');
+        }
+        stringBuffer.append("end");
+        return stringBuffer.toString();
     }
 }

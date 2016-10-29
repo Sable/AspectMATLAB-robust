@@ -19,7 +19,7 @@ public final class TypeSignature extends Pattern {
     }
 
     /**
-     * get the type signature from the type pattern, if the type pattern is empty, it will return trivial pattern {@code
+     * get the type signature from the type patternExpand, if the type patternExpand is empty, it will return trivial patternExpand {@code
      * [*]}
      * @return the type signature
      */
@@ -33,9 +33,9 @@ public final class TypeSignature extends Pattern {
     }
 
     /**
-     * determine if such pattern is a trivial pattern, in this case, the [*] wildcard will be consider as a trivial
-     * pattern.
-     * @return {@code true} if the pattern is a trivial pattern, otherwise {@code false}
+     * determine if such patternExpand is a trivial patternExpand, in this case, the [*] wildcard will be consider as a trivial
+     * patternExpand.
+     * @return {@code true} if the patternExpand is a trivial patternExpand, otherwise {@code false}
      */
     public boolean isTrivial() {
         String signature = getSignature();
@@ -43,7 +43,7 @@ public final class TypeSignature extends Pattern {
     }
 
     /**
-     * we leave the type weeding to the type pattern, and get/set pattern, this method will always return a empty
+     * we leave the type weeding to the type patternExpand, and get/set patternExpand, this method will always return a empty
      * report
      * @return the structural weeding report
      */

@@ -12,17 +12,17 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-/** an abstract representation on or operation between to modifier pattern */
+/** an abstract representation on or operation between to modifier patternExpand */
 public final class ModifierOr extends Modifier {
     private final Modifier lhsModifier;
     private final Modifier rhsModifier;
 
     /**
-     * construct or modifier by specific left hand side and right hand side modifier pattern, the constructor will
+     * construct or modifier by specific left hand side and right hand side modifier patternExpand, the constructor will
      * construct its own {@link OrExpr} AST node.
      * @param lhs left hand side modifier
      * @param rhs right hand side modifier
-     * @param enclosingFilename aspect file containing the pattern
+     * @param enclosingFilename aspect file containing the patternExpand
      * @throws NullPointerException if {@code lhs} or {@code rhs} is {@code null}
      */
     @Deprecated

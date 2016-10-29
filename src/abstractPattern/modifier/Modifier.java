@@ -8,13 +8,13 @@ import utils.MergableHashSet;
 
 import java.util.function.Function;
 
-/** an abstract representation on the modifier pattern */
+/** an abstract representation on the modifier patternExpand */
 public abstract class Modifier extends Pattern {
 
     /**
-     * @param modifierPattern modifier pattern expression from parser
+     * @param modifierPattern modifier patternExpand expression from parser
      * @param enclosingFilename enclosing aspect file name
-     * @throws IllegalArgumentException if {@code primitiveExpr} is not a modifier pattern */
+     * @throws IllegalArgumentException if {@code primitiveExpr} is not a modifier patternExpand */
     @Deprecated
     @SuppressWarnings("deprecation")
     public Modifier(Expr modifierPattern, String enclosingFilename) {
@@ -22,19 +22,19 @@ public abstract class Modifier extends Pattern {
     }
 
     /**
-     * collect all the modifiers type on the modifier pattern, this method will be helpful during the modifier
+     * collect all the modifiers type on the modifier patternExpand, this method will be helpful during the modifier
      * validation
      * @return a set contains all the class type of the modifiers
      */
     public abstract MergableHashSet<Class<? extends Modifier>> getModifierTypeSet();
 
     /**
-     * build abstract modifier pattern from patten expression
-     * @param patternExpression pattern expression
+     * build abstract modifier patternExpand from patten expression
+     * @param patternExpression patternExpand expression
      * @param enclosingFilename enclosing aspect file path
-     * @return the constructed abstract modifier pattern
+     * @return the constructed abstract modifier patternExpand
      * @throws NullPointerException if {@code patternExpression} is {@code null}
-     * @throws IllegalArgumentException if {@code patternExpression} is not a pattern expression
+     * @throws IllegalArgumentException if {@code patternExpression} is not a patternExpand expression
      * @throws IllegalArgumentException if {@code patternExpression} do not resolve as {@code Modifier} from
      *                                  {@link abstractPattern.analysis.PatternTypeAnalysis#analyze(Expr)}
      */

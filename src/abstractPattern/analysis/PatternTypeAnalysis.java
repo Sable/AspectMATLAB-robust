@@ -5,15 +5,15 @@ import utils.LiteralBuilder;
 
 import java.util.Set;
 
-/** pattern type analysis */
+/** patternExpand type analysis */
 public enum PatternTypeAnalysis {
     /**
-     * primitive pattern (patterns will provide at least on join point during code transformation and weaving)
+     * primitive patternExpand (patterns will provide at least on join point during code transformation and weaving)
      */
     Primitive,
     /**
-     * modifier pattern (pattern do not provide join point during code transformation and weaving, instead will pose
-     * restriction on the primitive pattern they bound to)
+     * modifier patternExpand (patternExpand do not provide join point during code transformation and weaving, instead will pose
+     * restriction on the primitive patternExpand they bound to)
      */
     Modifier,
     /**
@@ -21,7 +21,7 @@ public enum PatternTypeAnalysis {
      */
     Invalid;
 
-    /** a set containing all primitive pattern AST node class */
+    /** a set containing all primitive patternExpand AST node class */
     public static final Set<PatternType> primitivePatternSet = new LiteralBuilder<PatternType>()
             .put(PatternType.Annotation)
             .put(PatternType.Call)
@@ -35,7 +35,7 @@ public enum PatternTypeAnalysis {
             .put(PatternType.Set)
             .asSet();
 
-    /** a set containing all modifier pattern AST node class */
+    /** a set containing all modifier patternExpand AST node class */
     public static final Set<PatternType> modifierPatternSet = new LiteralBuilder<PatternType>()
             .put(PatternType.Shape)
             .put(PatternType.Type)
@@ -43,7 +43,7 @@ public enum PatternTypeAnalysis {
             .asSet();
 
     /**
-     * And case handler in pattern type analysis, use following merge strategy: <br>
+     * And case handler in patternExpand type analysis, use following merge strategy: <br>
      * <pre><code>
      * AND       | Primitive | Modifier  | Invalid
      * ----------+-----------+-----------+--------
@@ -51,9 +51,9 @@ public enum PatternTypeAnalysis {
      * Modifier  | Primitive | Modifier  | Invalid
      * Invalid   | Invalid   | Invalid   | Invalid
      * </code></pre>
-     * @param lhs and left hand side pattern type analysis result
-     * @param rhs and right hand side pattern type analysis result
-     * @return and expression pattern type analysis result */
+     * @param lhs and left hand side patternExpand type analysis result
+     * @param rhs and right hand side patternExpand type analysis result
+     * @return and expression patternExpand type analysis result */
     public static PatternTypeAnalysis andMerge(PatternTypeAnalysis lhs, PatternTypeAnalysis rhs) {
         switch (lhs) {
             case Primitive: {
@@ -77,16 +77,16 @@ public enum PatternTypeAnalysis {
     }
 
     /**
-     * OrTransformer case handler in pattern type analysis, use following merge strategy: <br>
+     * PatternOrTrans case handler in patternExpand type analysis, use following merge strategy: <br>
      * <pre><code>
-     * OrTransformer        | Primitive | Modifier | Invalid
+     * PatternOrTrans        | Primitive | Modifier | Invalid
      * ----------+-----------+----------+--------
      * Primitive | Primitive | Invalid  | Invalid
      * Modifier  | Invalid   | Modifier | Invalid
      * Invalid   | Invalid   | Invalid  | Invalid
      * </code></pre>
-     * @param lhs or left hand side pattern type analysis result
-     * @param rhs or right hand side pattern type analysis result
+     * @param lhs or left hand side patternExpand type analysis result
+     * @param rhs or right hand side patternExpand type analysis result
      * @return or expression type analysis result */
     public static PatternTypeAnalysis orMerge(PatternTypeAnalysis lhs, PatternTypeAnalysis rhs) {
         switch (lhs) {
@@ -111,13 +111,13 @@ public enum PatternTypeAnalysis {
     }
 
     /**
-     * Not case handler in pattern type analysis, use following merge strategy: <br>
+     * Not case handler in patternExpand type analysis, use following merge strategy: <br>
      * <pre><code>
      * Not | Primitive | Modifier | Invalid
      * ----+-----------+----------+--------
      *     | Invalid   | Modifier | Invalid
      * </code></pre>
-     * @param operand not operand pattern type analysis result
+     * @param operand not operand patternExpand type analysis result
      * @return not expression type analysis result*/
     public static PatternTypeAnalysis notMerge(PatternTypeAnalysis operand) {
         switch (operand) {
@@ -130,11 +130,11 @@ public enum PatternTypeAnalysis {
     }
 
     /**
-     * perform pattern type analysis to a given pattern, it will determine if the pattern is a primitive pattern,
-     * modifier pattern or invalid pattern.
-     * @param pattern pattern to be determined
-     * @return the pattern type of the pattern
-     * @throws IllegalArgumentException if the input argument is not a pattern expression
+     * perform patternExpand type analysis to a given patternExpand, it will determine if the patternExpand is a primitive patternExpand,
+     * modifier patternExpand or invalid patternExpand.
+     * @param pattern patternExpand to be determined
+     * @return the patternExpand type of the patternExpand
+     * @throws IllegalArgumentException if the input argument is not a patternExpand expression
      */
     public static PatternTypeAnalysis analyze(Expr pattern) {
         if (!PatternType.isPatternExpression(pattern)) throw new IllegalArgumentException();

@@ -1,16 +1,17 @@
-package transformer.pattern;
+package transformer.patternExpand;
 
 import ast.Expr;
 import ast.NotExpr;
+import transformer.UnboundedIdentifier;
 
 import java.util.Map;
 
-public final class NotTransformer extends PatternTransformer {
-    private final PatternTransformer operandTransformer;
+public final class PatternNotTrans extends PatternTrans {
+    private final PatternTrans operandTransformer;
 
-    public NotTransformer(NotExpr notExpr, Map<String, Expr> predefinedPattern) {
+    public PatternNotTrans(NotExpr notExpr, Map<String, Expr> predefinedPattern) {
         super(notExpr, predefinedPattern);
-        operandTransformer = PatternTransformer.buildPatternTransformer(notExpr.getOperand(), predefinedPattern);
+        operandTransformer = PatternTrans.buildPatternTransformer(notExpr.getOperand(), predefinedPattern);
     }
 
     @Override
@@ -24,7 +25,7 @@ public final class NotTransformer extends PatternTransformer {
     }
 
     @Override
-    public Expr copyAndTransform() {
+    public Expr copyAndTransform() throws UnboundedIdentifier {
         Expr operandTransform = operandTransformer.copyAndTransform();
 
         NotExpr copiedNotExpr = (NotExpr) pattern.copy();

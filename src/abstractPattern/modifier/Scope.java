@@ -9,13 +9,13 @@ import utils.MergableHashSet;
 
 import java.util.Optional;
 
-/** a abstract representation on the scope pattern */
+/** a abstract representation on the scope patternExpand */
 public final class Scope extends Modifier {
     private final ScopeType scopeType;
     private final String scopeName;
 
     /**
-     * construct from a {@link PatternWithin} AST node. If the pattern do not specific a scope type, use {@code [*]}
+     * construct from a {@link PatternWithin} AST node. If the patternExpand do not specific a scope type, use {@code [*]}
      * wildcard instead.
      * @param patternWithin {@link PatternWithin} AST node
      * @param enclosingFilename enclosing file path
@@ -38,7 +38,7 @@ public final class Scope extends Modifier {
     }
 
     /**
-     * perform a structural weeding on the scope pattern, it will:
+     * perform a structural weeding on the scope patternExpand, it will:
      * <ul>
      *     <li>raise errors if {@code [..]} wildcard is used as a scope name,</li>
      *     <li>raise errors if {@code [..]} wildcard is used as a identifier name</li>
@@ -55,14 +55,14 @@ public final class Scope extends Modifier {
             report.AddError(
                     enclosingFilename,
                     startLineNumber, startColumnNumber,
-                    "wildcard [..] is not a valid matcher in scope pattern for scope type, use [*] instead"
+                    "wildcard [..] is not a valid matcher in scope patternExpand for scope type, use [*] instead"
             );
         }
         if ("..".equals(scopeName)) {
             report.AddError(
                     enclosingFilename,
                     startLineNumber, startColumnNumber,
-                    "wildcard [..] is not a valid matcher in scope pattern for scope name, use [*] instead"
+                    "wildcard [..] is not a valid matcher in scope patternExpand for scope name, use [*] instead"
             );
         }
         return report;
@@ -70,7 +70,7 @@ public final class Scope extends Modifier {
 
     /**
      * @see Modifier#getModifierTypeSet()
-     * @return a set contains the java class signature for the current modifier pattern
+     * @return a set contains the java class signature for the current modifier patternExpand
      */
     @Override
     public MergableHashSet<Class<? extends Modifier>> getModifierTypeSet() {

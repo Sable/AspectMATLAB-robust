@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-/** an abstract representation on the call pattern */
+/** an abstract representation on the call patternExpand */
 public final class Call extends Primitive {
     private final String identifier;
     private final List<FullSignature> inputSignatureList = new LinkedList<>();
@@ -20,7 +20,7 @@ public final class Call extends Primitive {
      * empty signature list as default, which match to exactly zero output values.
      * @param patternCall {@link PatternCall} AST node
      * @param enclosingFilename enclosing aspect file path
-     * @throws IllegalArgumentException if the call pattern do have a identifier name signature
+     * @throws IllegalArgumentException if the call patternExpand do have a identifier name signature
      */
     @Deprecated
     @SuppressWarnings("deprecation")
@@ -43,7 +43,7 @@ public final class Call extends Primitive {
     }
 
     /**
-     * perform a structural weeding on call pattern, it will:
+     * perform a structural weeding on call patternExpand, it will:
      * <ul>
      *     <li>merging structural weeding result from input signatures,</li>
      *     <li>merging structural weeding result from output signatures,</li>
@@ -64,7 +64,7 @@ public final class Call extends Primitive {
             report.AddError(
                     enclosingFilename,
                     startLineNumber, startColumnNumber,
-                    "wildcard [..] is not a valid matcher in call pattern for identifier name, use [*] instead"
+                    "wildcard [..] is not a valid matcher in call patternExpand for identifier name, use [*] instead"
             );
         }
         return report;

@@ -7,7 +7,7 @@ import utils.MergableHashSet;
 
 import java.util.Optional;
 
-/** an abstract representation of not operation on a modifier pattern */
+/** an abstract representation of not operation on a modifier patternExpand */
 public final class ModifierNot extends Modifier {
     private final Modifier operandModifier;
 

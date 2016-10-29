@@ -2,28 +2,28 @@ package abstractPattern.analysis;
 
 import ast.*;
 
-/** a abstract representation on the pattern type */
+/** a abstract representation on the patternExpand type */
 public enum PatternType {
-    /** annotation pattern */           Annotation,
-    /** subroutine call pattern */      Call,
-    /** shape pattern */                Shape,
-    /** subroutine execution pattern */ Execution,
-    /** variable get pattern */         Get,
-    /** type pattern */                 Type,
-    /** loop pattern */                 Loop,
-    /** loop body pattern */            LoopBody,
-    /** loop head pattern */            LoopHead,
-    /** main execution pattern */       MainExecution,
-    /** operator pattern */             Operator,
-    /** variable set pattern */         Set,
-    /** scope pattern */                Scope;
+    /** annotation patternExpand */           Annotation,
+    /** subroutine call patternExpand */      Call,
+    /** shape patternExpand */                Shape,
+    /** subroutine execution patternExpand */ Execution,
+    /** variable get patternExpand */         Get,
+    /** type patternExpand */                 Type,
+    /** loop patternExpand */                 Loop,
+    /** loop body patternExpand */            LoopBody,
+    /** loop head patternExpand */            LoopHead,
+    /** main execution patternExpand */       MainExecution,
+    /** operator patternExpand */             Operator,
+    /** variable set patternExpand */         Set,
+    /** scope patternExpand */                Scope;
 
     /**
-     * get pattern type from a given AST node class, throws {@code IllegalArgumentException} if such AST node is not
-     * a valid aspectMATLAB pattern expression.
+     * get patternExpand type from a given AST node class, throws {@code IllegalArgumentException} if such AST node is not
+     * a valid aspectMATLAB patternExpand expression.
      * <ul>
      *     <li>{@code PatternAnnotate} -&gt; {@code PatternType.Annotation}</li>
-     *     <li>{@code PatternCall} -&gt; {@code PatternType.Call}</li>
+     *     <li>{@code PatternCallTrans} -&gt; {@code PatternType.Call}</li>
      *     <li>{@code PatternDimension} -&gt; {@code PatternType.ShapeSignature}</li>
      *     <li>{@code PatternExecution.class} -&gt; {@code PatternType.Execution}</li>
      *     <li>{@code PatternGet.class} -&gt; {@code PatternType.Get}</li>
@@ -38,7 +38,7 @@ public enum PatternType {
      * </ul>
      * @param nodeClass AST node class
      * @return corresponding PatternType enumeration
-     * @throws IllegalArgumentException input class is not a valid aspectMATLAB pattern expression
+     * @throws IllegalArgumentException input class is not a valid aspectMATLAB patternExpand expression
      */
     public static PatternType fromASTNodes(Class<? extends ASTNode> nodeClass) {
         if (nodeClass.equals(PatternAnnotate.class)) return PatternType.Annotation;
@@ -58,9 +58,9 @@ public enum PatternType {
     }
 
     /**
-     * determine if a AST node is a pattern expression
+     * determine if a AST node is a patternExpand expression
      * @param astNode AST node to be determined
-     * @return {@code true} if such node is indeed a pattern expression, otherwise return {@code false}
+     * @return {@code true} if such node is indeed a patternExpand expression, otherwise return {@code false}
      */
     public static boolean isPatternExpression(ASTNode astNode) {
         if (astNode instanceof AndExpr) {
@@ -82,9 +82,9 @@ public enum PatternType {
     }
 
     /**
-     * determine if a given AST node is a basic pattern expression
+     * determine if a given AST node is a basic patternExpand expression
      * @param astNode AST node to be determined
-     * @return {@code true} if such node is indeed a basic pattern expression, otherwise reutrn {@code false}
+     * @return {@code true} if such node is indeed a basic patternExpand expression, otherwise reutrn {@code false}
      */
     public static boolean isBasicPatternExpression(ASTNode astNode) {
         if (astNode instanceof PatternAnnotate)         return true;

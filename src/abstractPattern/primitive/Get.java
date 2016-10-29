@@ -6,17 +6,17 @@ import ast.PatternGet;
 
 import java.util.Optional;
 
-/** an abstract representation on the get pattern */
+/** an abstract representation on the get patternExpand */
 public final class Get extends Primitive {
     private final FullSignature fullSignature;
     private final String identifier;
 
     /**
-     * construct from {@link PatternGet} AST node. If the pattern do not provide a full signature, will create a full
-     * signature with empty shape pattern and empty type pattern.
+     * construct from {@link PatternGet} AST node. If the patternExpand do not provide a full signature, will create a full
+     * signature with empty shape patternExpand and empty type patternExpand.
      * @param patternGet {@link PatternGet} AST node
      * @param enclosingFilename enclosing aspect file path
-     * @throws IllegalArgumentException if get pattern do not have a identifier name signature
+     * @throws IllegalArgumentException if get patternExpand do not have a identifier name signature
      */
     @Deprecated
     @SuppressWarnings("deprecation")
@@ -36,7 +36,7 @@ public final class Get extends Primitive {
     }
 
     /**
-     * perform a structural weeding on the get pattern, it will:
+     * perform a structural weeding on the get patternExpand, it will:
      * <ul>
      *     <li>raises error if identifier using [..] wildcard,</li>
      *     <li>raises error if type using [..] wildcard,</li>
@@ -51,14 +51,14 @@ public final class Get extends Primitive {
             report.AddError(
                     enclosingFilename,
                     startLineNumber, startColumnNumber,
-                    "wildcard [..] is not a valid matcher in get pattern for identifier name, use [*] instead"
+                    "wildcard [..] is not a valid matcher in get patternExpand for identifier name, use [*] instead"
             );
         }
         if ("..".equals(fullSignature.getTypeSignature().getSignature())) {
             report.AddError(
                     enclosingFilename,
                     startLineNumber, startColumnNumber,
-                    "wildcard [..] is not a valid matcher in get pattern for type name, use [*] instead"
+                    "wildcard [..] is not a valid matcher in get patternExpand for type name, use [*] instead"
             );
         }
         return report;

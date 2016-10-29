@@ -13,13 +13,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-/** an abstract representation on the operator pattern */
+/** an abstract representation on the operator patternExpand */
 public final class Operator extends Primitive {
     private final OperatorType operatorType;
     private final Tuple operandSignautre;
 
     /**
-     * construct from {@link PatternOperator} AST node. If the operator pattern do not provide enough operand
+     * construct from {@link PatternOperator} AST node. If the operator patternExpand do not provide enough operand
      * signature, it will automatically expands it with empty signature
      * @param patternOperator {@link PatternOperator} AST node
      * @param enclosingFilename enclosing aspect file path
@@ -58,7 +58,7 @@ public final class Operator extends Primitive {
     }
 
     /**
-     * perform a structural weeding on the operator pattern, it will:
+     * perform a structural weeding on the operator patternExpand, it will:
      * <ul>
      *     <li>raise error if any of the operand type signature use [..] wildcard </li>
      *     <li>raise error if operator type signature use [..] wildcard</li>
@@ -74,7 +74,7 @@ public final class Operator extends Primitive {
             report.AddError(
                     enclosingFilename,
                     startLineNumber, startColumnNumber,
-                    "wildcard [..] is not a valid matcher in operator pattern for operator type, use [*] instead"
+                    "wildcard [..] is not a valid matcher in operator patternExpand for operator type, use [*] instead"
             );
         }
         for (Object signature : operandSignautre.toList()) {
@@ -83,7 +83,7 @@ public final class Operator extends Primitive {
                 report.AddError(
                         enclosingFilename,
                         startLineNumber, startColumnNumber,
-                        "wildcard [..] is not a valid matcher in operator pattern for operand type, use [*] instead"
+                        "wildcard [..] is not a valid matcher in operator patternExpand for operand type, use [*] instead"
                 );
             }
         }

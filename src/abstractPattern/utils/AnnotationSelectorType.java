@@ -2,7 +2,7 @@ package abstractPattern.utils;
 
 import ast.Name;
 
-/** an abstract representation on annotation pattern selectors */
+/** an abstract representation on annotation patternExpand selectors */
 public enum AnnotationSelectorType {
     /** selector to match a variable */                Var,
     /** selector to match a string literal */          Str,

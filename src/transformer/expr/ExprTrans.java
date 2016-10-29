@@ -3,7 +3,7 @@ package transformer.expr;
 import ast.Expr;
 import transformer.ASTTransformer;
 
-public abstract class ExprTransformer implements ASTTransformer<Expr> {
+public abstract class ExprTrans implements ASTTransformer<Expr> {
 
 
     @Override
