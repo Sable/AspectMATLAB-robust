@@ -6,8 +6,8 @@ import Matlab.Utils.IReport;
 import Matlab.Utils.Message;
 import Matlab.Utils.Result;
 import abstractPattern.Action;
-import ast.AspectDef;
-import ast.CompilationUnits;
+import ast.*;
+import transformer.expr.examples.IntLiteralsTransform;
 
 import java.util.HashMap;
 
@@ -36,6 +36,11 @@ public class Main {
         final String path = "/Users/k9/Desktop/AspectMATLAB/src/aspect.matlab";
         AspectDef aspectDef = (AspectDef) parseOrDie(path).getProgram(0);
         Action action = new Action(aspectDef.getAction(0).getAction(0), new HashMap<>(), x -> path);
+
+        ExprStmt stmt = (ExprStmt) action.getStatementList().getChild(0);
+
+        IntLiteralsTransform intLiteralsTransform = new IntLiteralsTransform(x -> x + 1);
+        System.out.println(intLiteralsTransform.transform(stmt.getExpr()).getPrettyPrinted());
 
         System.out.println(action.toString());
         System.out.println(action.getSourceCodePosition());

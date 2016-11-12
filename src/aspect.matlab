@@ -1,8 +1,8 @@
 aspect_ aspect
 
 actions
-    a : before (get(*) | set(*)) & ~(~istype(logical) | ~dimension([3,3])) : ()
-
+    a : before get(ab) : ()
+        1 + 2 + 3;
     end
 
 end

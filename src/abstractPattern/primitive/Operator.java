@@ -4,10 +4,11 @@ import Matlab.Utils.IReport;
 import Matlab.Utils.Report;
 import abstractPattern.signature.FullSignature;
 import abstractPattern.utils.OperatorType;
-import ast.PatternOperator;
+import ast.*;
 import org.javatuples.Pair;
 import org.javatuples.Tuple;
 import org.javatuples.Unit;
+import transformer.TransformQueryEnv;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -99,6 +100,37 @@ public final class Operator extends Primitive {
             );
         }
         return report;
+    }
+
+    @Override
+    public boolean isPossibleJoinPoint(ASTNode astNode, TransformQueryEnv transformQueryEnv) {
+        if (astNode instanceof PlusExpr) {
+            return operatorType.equals(OperatorType.Plus);
+        } else if (astNode instanceof MinusExpr) {
+            return operatorType.equals(OperatorType.Minus);
+        } else if (astNode instanceof MTimesExpr) {
+            return operatorType.equals(OperatorType.mTimes);
+        } else if (astNode instanceof ETimesExpr) {
+            return operatorType.equals(OperatorType.Time);
+        } else if (astNode instanceof MDivExpr) {
+            return operatorType.equals(OperatorType.mrDivide);
+        } else if (astNode instanceof EDivExpr) {
+            return operatorType.equals(OperatorType.rDivide);
+        } else if (astNode instanceof MLDivExpr) {
+            return operatorType.equals(OperatorType.mlDivide);
+        } else if (astNode instanceof ELDivExpr) {
+            return operatorType.equals(OperatorType.lDivide);
+        } else if (astNode instanceof MPowExpr) {
+            return operatorType.equals(OperatorType.mPower);
+        } else if (astNode instanceof EPowExpr) {
+            return operatorType.equals(OperatorType.Power);
+        } else if (astNode instanceof ArrayTransposeExpr) {
+            return operatorType.equals(OperatorType.Transpose);
+        } else if (astNode instanceof MTransposeExpr) {
+            return operatorType.equals(OperatorType.mTranspose);
+        } else {
+            return false;
+        }
     }
 
     @Override

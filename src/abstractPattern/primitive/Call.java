@@ -3,11 +3,15 @@ package abstractPattern.primitive;
 import Matlab.Utils.IReport;
 import Matlab.Utils.Report;
 import abstractPattern.signature.FullSignature;
-import ast.PatternCall;
+import ast.*;
+import natlab.toolkits.analysis.varorfun.VFDatum;
+import org.javatuples.Pair;
+import transformer.TransformQueryEnv;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /** an abstract representation on the call patternExpand */
 public final class Call extends Primitive {
@@ -68,6 +72,22 @@ public final class Call extends Primitive {
             );
         }
         return report;
+    }
+
+    private boolean isPossibleJoinPointNameExpr(NameExpr nameExpr, TransformQueryEnv transformQueryEnv) {
+        Name name = Optional.ofNullable(nameExpr).orElseThrow(NullPointerException::new).getName();
+
+        VFDatum kindAnalysisResult = transformQueryEnv.kindAnalysis.getResult(name);
+        if (kindAnalysisResult.isFunction()) {
+
+        }
+        if (kindAnalysisResult.isVariable()) {
+
+        }
+        if (kindAnalysisResult.isID()) {
+
+        }
+        return false;
     }
 
     @Override

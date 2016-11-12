@@ -4,9 +4,7 @@ import abstractPattern.utils.ContentExposureType;
 import abstractPattern.utils.WeaveType;
 import ast.*;
 import joinpoint.AMSourceCodePos;
-import transformer.UnboundedIdentifier;
-import transformer.patternExpand.PatternTrans;
-import transformer.patternExpand.PatternTypeTrans;
+import transformer.pattern.ExpandPatternTransformer;
 import utils.CompilationInfo;
 
 import java.util.HashMap;
@@ -27,20 +25,19 @@ public final class Action {
     private final WeaveType weaveType;
     private final String name;
 
-    public Action(ast.Action action, HashMap<String, Expr> predefinedPattern, CompilationInfo compilationInfo)
-            throws UnboundedIdentifier{
+    public Action(ast.Action action, HashMap<String, Expr> predefinedPattern, CompilationInfo compilationInfo) {
         startLineNumber = Optional.ofNullable(action).orElseThrow(NullPointerException::new).getStartLine();
         startColumnNumber = Optional.ofNullable(action).orElseThrow(NullPointerException::new).getStartColumn();
         enclosingFilename = Optional
                 .ofNullable(compilationInfo)
                 .orElseThrow(NullPointerException::new)
                 .getASTNodeEnclosingFile(action);
-        Expr pattenExpression = Optional.ofNullable(action.getExpr()).orElseThrow(IllegalArgumentException::new);
+        Expr patternExpression = Optional.ofNullable(action.getExpr()).orElseThrow(IllegalArgumentException::new);
 
-        PatternTrans patternTrans = PatternTypeTrans.buildPatternTransformer(pattenExpression, predefinedPattern);
-        pattenExpression = patternTrans.copyAndTransform();
+        ExpandPatternTransformer transformer = new ExpandPatternTransformer(predefinedPattern);
+        patternExpression = transformer.transform(patternExpression);
 
-        pattern = Pattern.buildAbstractPattern(pattenExpression, enclosingFilename);
+        pattern = Pattern.buildAbstractPattern(patternExpression, enclosingFilename);
 
         Optional.ofNullable(action.getNestedFunctionList()).orElseGet(List::new).forEach(nestedFunctionSet::add);
         Optional.ofNullable(action.getStmtList()).orElseGet(List::new).forEach(statementList::add);
@@ -55,6 +52,10 @@ public final class Action {
     @SuppressWarnings("deprecation")
     public AMSourceCodePos getSourceCodePosition() {
         return new AMSourceCodePos(startLineNumber, startColumnNumber, enclosingFilename);
+    }
+
+    public List<Stmt> getStatementList() {
+        return statementList;
     }
 
     public Pattern getPattern() {

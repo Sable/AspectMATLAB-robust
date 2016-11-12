@@ -2,7 +2,9 @@ package abstractPattern.primitive;
 
 import Matlab.Utils.IReport;
 import abstractPattern.signature.FullSignature;
-import ast.PatternSet;
+import ast.*;
+import natlab.toolkits.analysis.varorfun.VFDatum;
+import transformer.TransformQueryEnv;
 
 import java.util.Optional;
 
@@ -62,6 +64,73 @@ public final class Set extends Primitive {
             );
         }
         return report;
+    }
+
+    private boolean isPossibleJoinPointNameExpr(NameExpr nameExpr, TransformQueryEnv transformQueryEnv) {
+        Name name = Optional.ofNullable(nameExpr).orElseThrow(NullPointerException::new).getName();
+
+        if (name == null) throw new NullPointerException();
+        VFDatum kindAnalysisResult = transformQueryEnv.kindAnalysis.getResult(name);
+        if (kindAnalysisResult.isFunction()) return false;
+        if (kindAnalysisResult.isVariable()) {
+            if (identifier.equals("*")) {
+                return true;
+            } else {
+                return identifier.equals(Optional.ofNullable(name.getID()).orElseThrow(NullPointerException::new));
+            }
+        }
+        if (kindAnalysisResult.isID()) {
+            if (identifier.equals("*")) {
+                return true;
+            } else {
+                return identifier.equals(Optional.ofNullable(name.getID()).orElseThrow(NullPointerException::new));
+            }
+        }
+        /* control flow should not reach here */
+        throw new AssertionError();
+    }
+
+    private boolean isPossibleJoinPointParameterExpr(ParameterizedExpr parameterizedExpr,
+                                                     TransformQueryEnv transformQueryEnv) {
+        Expr targetExpr = Optional.ofNullable(parameterizedExpr).orElseThrow(NullPointerException::new).getTarget();
+        if (targetExpr instanceof NameExpr) {
+            return isPossibleJoinPointNameExpr((NameExpr) targetExpr, transformQueryEnv);
+        } else {
+            return false;
+        }
+    }
+
+    private boolean isPossibleJoinPointCellIndexExpr(CellIndexExpr cellIndexExpr, TransformQueryEnv transformQueryEnv) {
+        Expr targetExpr = Optional.ofNullable(cellIndexExpr).orElseThrow(NullPointerException::new).getTarget();
+        if (targetExpr instanceof NameExpr) {
+            return isPossibleJoinPointNameExpr((NameExpr) targetExpr, transformQueryEnv);
+        } else {
+            return false;
+        }
+    }
+
+    private boolean isPossibleJoinPointDotExpr(DotExpr dotExpr, TransformQueryEnv transformQueryEnv) {
+        Expr targetExpr = Optional.ofNullable(dotExpr).orElseThrow(NullPointerException::new).getTarget();
+        if (targetExpr instanceof NameExpr) {
+            return isPossibleJoinPointNameExpr((NameExpr) targetExpr, transformQueryEnv);
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean isPossibleJoinPoint(ASTNode astNode, TransformQueryEnv transformQueryEnv) {
+        if (astNode instanceof NameExpr) {
+            return isPossibleJoinPointNameExpr((NameExpr) astNode, transformQueryEnv);
+        } else if (astNode instanceof ParameterizedExpr) {
+            return isPossibleJoinPointParameterExpr((ParameterizedExpr) astNode, transformQueryEnv);
+        } else if (astNode instanceof CellIndexExpr) {
+            return isPossibleJoinPointCellIndexExpr((CellIndexExpr) astNode, transformQueryEnv);
+        } else if (astNode instanceof DotExpr) {
+            return isPossibleJoinPointDotExpr((DotExpr) astNode, transformQueryEnv);
+        } else {
+            return false;
+        }
     }
 
     @Override

@@ -148,5 +148,7 @@ public abstract class Primitive extends Pattern {
      * @param transformQueryEnv Transforming environment
      * @return {@code true} if AST node is possible a join point, otherwise {@code false}.
      */
-    public abstract boolean isPossibleJoinPoint(ASTNode astNode, TransformQueryEnv transformQueryEnv);
+    public boolean isPossibleJoinPoint(ASTNode astNode, TransformQueryEnv transformQueryEnv) {
+        return false;
+    }
 }
