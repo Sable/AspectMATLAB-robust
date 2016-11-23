@@ -4,11 +4,16 @@ import ast.*;
 
 public class CopyPatternTransformer extends AbstractPatternTransformer {
     @Override
+    public ASTNode ASTNodeHandle(ASTNode operand) {
+        return operand.copy();
+    }
+
+    @Override
     protected Expr caseAndExpr(AndExpr andExpr) {
+        AndExpr copiedNode = (AndExpr) ASTNodeHandle(andExpr);
+
         Expr copiedLHS = this.transform(andExpr.getLHS());
         Expr copiedRHS = this.transform(andExpr.getRHS());
-
-        AndExpr copiedNode = andExpr.copy();
         copiedNode.setLHS(copiedLHS);
         copiedNode.setRHS(copiedRHS);
 
@@ -17,10 +22,10 @@ public class CopyPatternTransformer extends AbstractPatternTransformer {
 
     @Override
     protected Expr caseOrExpr(OrExpr orExpr) {
+        OrExpr copiedNode = (OrExpr) ASTNodeHandle(orExpr);
+
         Expr copiedLHS = this.transform(orExpr.getLHS());
         Expr copiedRHS = this.transform(orExpr.getRHS());
-
-        OrExpr copiedNode = orExpr.copy();
         copiedNode.setLHS(copiedLHS);
         copiedNode.setRHS(copiedRHS);
 
@@ -29,9 +34,9 @@ public class CopyPatternTransformer extends AbstractPatternTransformer {
 
     @Override
     protected Expr caseNotExpr(NotExpr notExpr) {
-        Expr copiedOperand = this.transform(notExpr.getOperand());
+        NotExpr copiedNode = (NotExpr) ASTNodeHandle(notExpr);
 
-        NotExpr copiedNode = notExpr.copy();
+        Expr copiedOperand = this.transform(notExpr.getOperand());
         copiedNode.setOperand(copiedOperand);
 
         return copiedNode;

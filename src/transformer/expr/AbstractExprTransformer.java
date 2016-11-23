@@ -1,10 +1,12 @@
 package transformer.expr;
 
 import ast.*;
-import transformer.ASTTransformer;
+import transformer.ASTNodeTransformer;
 
-public abstract class AbstractExprTransformer implements ASTTransformer<Expr> {
+public abstract class AbstractExprTransformer implements ASTNodeTransformer {
     @Override
+    public abstract ASTNode ASTNodeHandle(ASTNode operand);
+
     public Expr transform(Expr target) {
         if (isLiteralExpr(target)) {
             return caseLiteralExpr(((LiteralExpr) target));

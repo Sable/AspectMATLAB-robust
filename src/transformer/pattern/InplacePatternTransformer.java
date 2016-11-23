@@ -4,6 +4,11 @@ import ast.*;
 
 public class InplacePatternTransformer extends AbstractPatternTransformer {
     @Override
+    public ASTNode ASTNodeHandle(ASTNode operand) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     protected Expr caseAndExpr(AndExpr andExpr) {
         Expr lhs = this.transform(andExpr.getLHS());
         Expr rhs = this.transform(andExpr.getRHS());

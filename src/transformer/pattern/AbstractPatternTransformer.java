@@ -1,10 +1,13 @@
 package transformer.pattern;
 
 import ast.*;
-import transformer.ASTTransformer;
+import transformer.ASTNodeTransformer;
 
-public abstract class AbstractPatternTransformer implements ASTTransformer<Expr> {
+public abstract class AbstractPatternTransformer implements ASTNodeTransformer {
+
     @Override
+    public abstract ASTNode ASTNodeHandle(ASTNode operand);
+
     public Expr transform(Expr pattern) {
         if (isBasePattern(pattern)) {
             return caseBasePatterns(pattern);

@@ -7,6 +7,11 @@ import java.util.stream.Collectors;
 
 public class InplaceExprTransformer extends AbstractExprTransformer {
     @Override
+    public ASTNode ASTNodeHandle(ASTNode operand) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     protected Expr caseRangeExpr(RangeExpr rangeExpr) {
         if (rangeExpr.hasIncr()) {
             Expr lowerExpr = this.transform(rangeExpr.getLower());
