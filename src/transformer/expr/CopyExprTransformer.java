@@ -99,7 +99,7 @@ public class CopyExprTransformer extends AbstractExprTransformer {
     protected Expr caseNameExpr(NameExpr nameExpr) {
         NameExpr copiedExpr = (NameExpr) ASTNodeHandle(nameExpr);
 
-        copiedExpr.setName(new Name(nameExpr));
+        copiedExpr.setName(new Name(nameExpr.getName().getID()));
 
         return copiedExpr;
     }
@@ -155,7 +155,7 @@ public class CopyExprTransformer extends AbstractExprTransformer {
         matrixExpr.getRowList().stream()
                 .map(row -> {
                     Row copiedRow = (Row) ASTNodeHandle(row);
-                    ast.List newRowExprList = new ast.List<>();
+                    ast.List<Expr> newRowExprList = new ast.List<>();
                     row.getElementList().stream().map(this::transform).forEachOrdered(newRowExprList::add);
                     copiedRow.setElementList(newRowExprList);
                     return copiedRow;
