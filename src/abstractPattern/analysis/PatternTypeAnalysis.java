@@ -3,6 +3,7 @@ package abstractPattern.analysis;
 import ast.*;
 import utils.LiteralBuilder;
 
+import java.util.Collections;
 import java.util.Set;
 
 /** patternExpand type analysis */
@@ -22,25 +23,30 @@ public enum PatternTypeAnalysis {
     Invalid;
 
     /** a set containing all primitive patternExpand AST node class */
-    public static final Set<PatternType> primitivePatternSet = new LiteralBuilder<PatternType>()
-            .put(PatternType.Annotation)
-            .put(PatternType.Call)
-            .put(PatternType.Execution)
-            .put(PatternType.Get)
-            .put(PatternType.Loop)
-            .put(PatternType.LoopBody)
-            .put(PatternType.LoopHead)
-            .put(PatternType.MainExecution)
-            .put(PatternType.Operator)
-            .put(PatternType.Set)
-            .asSet();
+    public static final Set<PatternType> primitivePatternSet = Collections.unmodifiableSet(
+            new LiteralBuilder<PatternType>()
+                    .put(PatternType.Annotation)
+                    .put(PatternType.Call)
+                    .put(PatternType.Execution)
+                    .put(PatternType.Get)
+                    .put(PatternType.Loop)
+                    .put(PatternType.LoopBody)
+                    .put(PatternType.LoopHead)
+                    .put(PatternType.MainExecution)
+                    .put(PatternType.Operator)
+                    .put(PatternType.Set)
+                    .asSet()
+    );
+
 
     /** a set containing all modifier patternExpand AST node class */
-    public static final Set<PatternType> modifierPatternSet = new LiteralBuilder<PatternType>()
-            .put(PatternType.Shape)
-            .put(PatternType.Type)
-            .put(PatternType.Scope)
-            .asSet();
+    public static final Set<PatternType> modifierPatternSet = Collections.unmodifiableSet(
+            new LiteralBuilder<PatternType>()
+                    .put(PatternType.Shape)
+                    .put(PatternType.Type)
+                    .put(PatternType.Scope)
+                    .asSet()
+    );
 
     /**
      * And case handler in patternExpand type analysis, use following merge strategy: <br>

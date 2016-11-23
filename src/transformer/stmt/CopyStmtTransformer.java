@@ -3,8 +3,8 @@ package transformer.stmt;
 import ast.*;
 import transformer.InvalidExprTransformer;
 import transformer.expr.CopyExprTransformer;
-import utils.LiteralBuilder;
 
+import java.util.Collections;
 import java.util.List;
 
 public class CopyStmtTransformer<T extends CopyExprTransformer> extends AbstractStmtTransformer<T> {
@@ -24,7 +24,7 @@ public class CopyStmtTransformer<T extends CopyExprTransformer> extends Abstract
         ExprStmt copiedStmt = (ExprStmt) ASTNodeHandle(exprStmt);
         copiedStmt.setExpr(copiedExpr);
 
-        return new LiteralBuilder<Stmt>().put(copiedStmt).asList();
+        return Collections.singletonList(copiedStmt);
     }
 
     @Override
@@ -36,7 +36,7 @@ public class CopyStmtTransformer<T extends CopyExprTransformer> extends Abstract
         copiedStmt.setLHS(copiedLHSExpr);
         copiedStmt.setRHS(copiedRHSExpr);
 
-        return new LiteralBuilder<Stmt>().put(copiedStmt).asList();
+        return Collections.singletonList(copiedStmt);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class CopyStmtTransformer<T extends CopyExprTransformer> extends Abstract
 
         copiedStmt.setNameList(copiedGlobalVarNameList);
 
-        return new LiteralBuilder<Stmt>().put(copiedStmt).asList();
+        return Collections.singletonList(copiedStmt);
     }
 
     @Override
@@ -64,7 +64,7 @@ public class CopyStmtTransformer<T extends CopyExprTransformer> extends Abstract
 
         copiedStmt.setNameList(copiedPersistentNameList);
 
-        return new LiteralBuilder<Stmt>().put(persistentStmt).asList();
+        return Collections.singletonList(copiedStmt);
     }
 
     @Override
@@ -73,35 +73,27 @@ public class CopyStmtTransformer<T extends CopyExprTransformer> extends Abstract
 
         copiedStmt.setCommand(shellCommandStmt.getCommand());
 
-        return new LiteralBuilder<Stmt>().put(copiedStmt).asList();
+        return Collections.singletonList(copiedStmt);
     }
 
     @Override
     protected List<Stmt> caseBreakStmt(BreakStmt breakStmt) {
-        return new LiteralBuilder<Stmt>()
-                .put((BreakStmt) ASTNodeHandle(breakStmt))
-                .asList();
+        return Collections.singletonList((BreakStmt) ASTNodeHandle(breakStmt));
     }
 
     @Override
     protected List<Stmt> caseContinueStmt(ContinueStmt continueStmt) {
-        return new LiteralBuilder<Stmt>()
-                .put((ContinueStmt) ASTNodeHandle(continueStmt))
-                .asList();
+        return Collections.singletonList((ContinueStmt) ASTNodeHandle(continueStmt));
     }
 
     @Override
     protected List<Stmt> caseReturnStmt(ReturnStmt returnStmt) {
-       return new LiteralBuilder<Stmt>()
-               .put((ReturnStmt) ASTNodeHandle(returnStmt))
-               .asList();
+       return Collections.singletonList((ReturnStmt) ASTNodeHandle(returnStmt));
     }
 
     @Override
     protected List<Stmt> caseEmptyStmt(EmptyStmt emptyStmt) {
-        return new LiteralBuilder<Stmt>()
-                .put((EmptyStmt) ASTNodeHandle(emptyStmt))
-                .asList();
+        return Collections.singletonList((EmptyStmt) ASTNodeHandle(emptyStmt));
     }
 
     @Override
@@ -122,7 +114,7 @@ public class CopyStmtTransformer<T extends CopyExprTransformer> extends Abstract
         copiedStmt.setAssignStmt((AssignStmt) transformedAssignStmt.get(0));
         copiedStmt.setStmtList(newStmtList);
 
-        return new LiteralBuilder<Stmt>().put(copiedStmt).asList();
+        return Collections.singletonList(copiedStmt);
     }
 
     @Override
@@ -138,7 +130,7 @@ public class CopyStmtTransformer<T extends CopyExprTransformer> extends Abstract
         copiedStmt.setExpr(transformedConditionExpr);
         copiedStmt.setStmtList(newStmtList);
 
-        return new LiteralBuilder<Stmt>().put(copiedStmt).asList();
+        return Collections.singletonList(copiedStmt);
     }
 
     @Override
@@ -160,13 +152,13 @@ public class CopyStmtTransformer<T extends CopyExprTransformer> extends Abstract
             copiedStmt.setTryStmtList(newTryStmtList);
             copiedStmt.setCatchStmtList(newCatchStmtList);
 
-            return new LiteralBuilder<Stmt>().put(copiedStmt).asList();
+            return Collections.singletonList(copiedStmt);
         } else {
             TryStmt copiedStmt = (TryStmt) ASTNodeHandle(tryStmt);
             copiedStmt.setTryStmtList(newTryStmtList);
             copiedStmt.setCatchStmtList(newCatchStmtList);
 
-            return new LiteralBuilder<Stmt>().put(copiedStmt).asList();
+            return Collections.singletonList(copiedStmt);
         }
     }
 
@@ -187,13 +179,13 @@ public class CopyStmtTransformer<T extends CopyExprTransformer> extends Abstract
             copiedStmt.setSwitchCaseBlockList(newCaseBlockList);
             copiedStmt.setDefaultCaseBlock(transformedDefaultCaseBlock);
 
-            return new LiteralBuilder<Stmt>().put(copiedStmt).asList();
+            return Collections.singletonList(copiedStmt);
         } else {
             SwitchStmt copiedStmt = (SwitchStmt) ASTNodeHandle(switchStmt);
             copiedStmt.setExpr(transformedSwitchExpr);
             copiedStmt.setSwitchCaseBlockList(newCaseBlockList);
 
-            return new LiteralBuilder<Stmt>().put(copiedStmt).asList();
+            return Collections.singletonList(copiedStmt);
         }
     }
 
@@ -210,7 +202,7 @@ public class CopyStmtTransformer<T extends CopyExprTransformer> extends Abstract
 
         copiedBlock.setStmtList(newStmtList);
 
-        return new LiteralBuilder<SwitchCaseBlock>().put(copiedBlock).asList();
+        return  Collections.singletonList(copiedBlock);
     }
 
     @Override
@@ -241,13 +233,13 @@ public class CopyStmtTransformer<T extends CopyExprTransformer> extends Abstract
             copiedStmt.setIfBlockList(newIfBlockList);
             copiedStmt.setElseBlock(copiedElseBlock);
 
-            return new LiteralBuilder<Stmt>().put(copiedStmt).asList();
+            return Collections.singletonList(copiedStmt);
         } else {
             IfStmt copiedStmt = (IfStmt) ASTNodeHandle(ifStmt);
 
             copiedStmt.setIfBlockList(newIfBlockList);
 
-            return new LiteralBuilder<Stmt>().put(copiedStmt).asList();
+            return Collections.singletonList(copiedStmt);
         }
     }
 
@@ -265,7 +257,7 @@ public class CopyStmtTransformer<T extends CopyExprTransformer> extends Abstract
         copiedBlock.setCondition(copiedConditionExpr);
         copiedBlock.setStmtList(newStmtList);
 
-        return new LiteralBuilder<IfBlock>().put(copiedBlock).asList();
+        return Collections.singletonList(copiedBlock);
     }
 
     @Override
@@ -301,7 +293,7 @@ public class CopyStmtTransformer<T extends CopyExprTransformer> extends Abstract
                 copiedStmt.setMinWorker(copiedMinWorkerExpr);
                 copiedStmt.setStmtList(newStmtList);
 
-                return new LiteralBuilder<Stmt>().put(copiedStmt).asList();
+                return Collections.singletonList(copiedStmt);
             } else {
                 Expr copiedMinWorkerExpr = this.exprTransformer.transform(spmdStmt.getMinWorker());
 
@@ -309,7 +301,7 @@ public class CopyStmtTransformer<T extends CopyExprTransformer> extends Abstract
                 copiedStmt.setMinWorker(copiedMinWorkerExpr);
                 copiedStmt.setStmtList(newStmtList);
 
-                return new LiteralBuilder<Stmt>().put(copiedStmt).asList();
+                return Collections.singletonList(copiedStmt);
             }
         } else {
             if (spmdStmt.hasMaxWorker()) {
@@ -319,12 +311,12 @@ public class CopyStmtTransformer<T extends CopyExprTransformer> extends Abstract
                 copiedStmt.setMaxWorker(copiedMaxWorkerExpr);
                 copiedStmt.setStmtList(newStmtList);
 
-                return new LiteralBuilder<Stmt>().put(copiedStmt).asList();
+                return Collections.singletonList(copiedStmt);
             } else {
                 SpmdStmt copiedStmt = (SpmdStmt) ASTNodeHandle(spmdStmt);
                 copiedStmt.setStmtList(newStmtList);
 
-                return new LiteralBuilder<Stmt>().put(copiedStmt).asList();
+                return Collections.singletonList(copiedStmt);
             }
         }
     }

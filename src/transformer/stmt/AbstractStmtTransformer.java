@@ -13,6 +13,10 @@ public abstract class AbstractStmtTransformer<T extends AbstractExprTransformer>
         this.exprTransformer = exprTransformer;
     }
 
+    public T getExprTransformer() {
+        return exprTransformer;
+    }
+
     @Override
     public abstract ASTNode ASTNodeHandle(ASTNode operand);
 

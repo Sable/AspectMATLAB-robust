@@ -3,8 +3,8 @@ package transformer.stmt;
 import ast.*;
 import transformer.InvalidExprTransformer;
 import transformer.expr.InplaceExprTransformer;
-import utils.LiteralBuilder;
 
+import java.util.Collections;
 import java.util.List;
 
 public class InplaceStmtTransformer<T extends InplaceExprTransformer> extends AbstractStmtTransformer<T> {
@@ -21,7 +21,7 @@ public class InplaceStmtTransformer<T extends InplaceExprTransformer> extends Ab
     protected List<Stmt> caseExprStmt(ExprStmt exprStmt) {
         Expr transformedExpr = this.exprTransformer.transform(exprStmt.getExpr());
         exprStmt.setExpr(transformedExpr);
-        return new LiteralBuilder<Stmt>().put(exprStmt).asList();
+        return  Collections.singletonList(exprStmt);
     }
 
     @Override
@@ -32,42 +32,42 @@ public class InplaceStmtTransformer<T extends InplaceExprTransformer> extends Ab
         assignStmt.setLHS(lhsTransformedExpr);
         assignStmt.setRHS(rhsTransformedExpr);
 
-        return new LiteralBuilder<Stmt>().put(assignStmt).asList();
+        return Collections.singletonList(assignStmt);
     }
 
     @Override
     protected List<Stmt> caseGlobalStmt(GlobalStmt globalStmt) {
-        return new LiteralBuilder<Stmt>().put(globalStmt).asList();
+        return Collections.singletonList(globalStmt);
     }
 
     @Override
     protected List<Stmt> casePersistentStmt(PersistentStmt persistentStmt) {
-        return new LiteralBuilder<Stmt>().put(persistentStmt).asList();
+        return Collections.singletonList(persistentStmt);
     }
 
     @Override
     protected List<Stmt> caseShellCommandStmt(ShellCommandStmt shellCommandStmt) {
-        return new LiteralBuilder<Stmt>().put(shellCommandStmt).asList();
+        return Collections.singletonList(shellCommandStmt);
     }
 
     @Override
     protected List<Stmt> caseBreakStmt(BreakStmt breakStmt) {
-        return new LiteralBuilder<Stmt>().put(breakStmt).asList();
+        return Collections.singletonList(breakStmt);
     }
 
     @Override
     protected List<Stmt> caseContinueStmt(ContinueStmt continueStmt) {
-        return new LiteralBuilder<Stmt>().put(continueStmt).asList();
+        return Collections.singletonList(continueStmt);
     }
 
     @Override
     protected List<Stmt> caseReturnStmt(ReturnStmt returnStmt) {
-        return new LiteralBuilder<Stmt>().put(returnStmt).asList();
+        return Collections.singletonList(returnStmt);
     }
 
     @Override
     protected List<Stmt> caseEmptyStmt(EmptyStmt emptyStmt) {
-        return new LiteralBuilder<Stmt>().put(emptyStmt).asList();
+        return Collections.singletonList(emptyStmt);
     }
 
     @Override
@@ -87,22 +87,22 @@ public class InplaceStmtTransformer<T extends InplaceExprTransformer> extends Ab
                 .forEachOrdered(newStmtList::addAll);
 
         forStmt.setStmtList(newStmtList);
-        return new LiteralBuilder<Stmt>().put(forStmt).asList();
+        return Collections.singletonList(forStmt);
     }
 
     @Override
     protected List<Stmt> caseWhileStmt(WhileStmt whileStmt) {
-        Expr transformedConditonExpr = this.exprTransformer.transform(whileStmt.getExpr());
+        Expr transformedConditionExpr = this.exprTransformer.transform(whileStmt.getExpr());
 
         ast.List<Stmt> newStmtList = new ast.List<>();
         whileStmt.getStmtList().stream()
                 .map(this::transform)
                 .forEachOrdered(newStmtList::addAll);
 
-        whileStmt.setExpr(transformedConditonExpr);
+        whileStmt.setExpr(transformedConditionExpr);
         whileStmt.setStmtList(newStmtList);
 
-        return new LiteralBuilder<Stmt>().put(whileStmt).asList();
+        return Collections.singletonList(whileStmt);
     }
 
     @Override
@@ -120,7 +120,7 @@ public class InplaceStmtTransformer<T extends InplaceExprTransformer> extends Ab
         tryStmt.setTryStmtList(newTryStmtList);
         tryStmt.setCatchStmtList(newCatchStmtList);
 
-        return new LiteralBuilder<Stmt>().put(tryStmt).asList();
+        return Collections.singletonList(tryStmt);
     }
 
     @Override
@@ -139,12 +139,12 @@ public class InplaceStmtTransformer<T extends InplaceExprTransformer> extends Ab
             switchStmt.setDefaultCaseBlock(transformedDefaultBlock);
             switchStmt.setSwitchCaseBlockList(newCaseBlockList);
 
-            return new LiteralBuilder<Stmt>().put(switchStmt).asList();
+            return Collections.singletonList(switchStmt);
         } else {
             switchStmt.setExpr(transformedConditionExpr);
             switchStmt.setSwitchCaseBlockList(newCaseBlockList);
 
-            return new LiteralBuilder<Stmt>().put(switchStmt).asList();
+            return Collections.singletonList(switchStmt);
         }
     }
 
@@ -160,7 +160,7 @@ public class InplaceStmtTransformer<T extends InplaceExprTransformer> extends Ab
         switchCaseBlock.setExpr(transformedConditionExpr);
         switchCaseBlock.setStmtList(newStmtList);
 
-        return new LiteralBuilder<SwitchCaseBlock>().put(switchCaseBlock).asList();
+        return Collections.singletonList(switchCaseBlock);
     }
 
     @Override
@@ -188,11 +188,11 @@ public class InplaceStmtTransformer<T extends InplaceExprTransformer> extends Ab
             ifStmt.setIfBlockList(newIfBlockList);
             ifStmt.setElseBlock(transformedElseBlock);
 
-            return new LiteralBuilder<Stmt>().put(ifStmt).asList();
+            return Collections.singletonList(ifStmt);
         } else {
             ifStmt.setIfBlockList(newIfBlockList);
 
-            return new LiteralBuilder<Stmt>().put(ifStmt).asList();
+            return Collections.singletonList(ifStmt);
         }
     }
 
@@ -208,7 +208,7 @@ public class InplaceStmtTransformer<T extends InplaceExprTransformer> extends Ab
         ifBlock.setCondition(transformedConditionExpr);
         ifBlock.setStmtList(newStmtList);
 
-        return new LiteralBuilder<IfBlock>().put(ifBlock).asList();
+        return Collections.singletonList(ifBlock);
     }
 
     @Override
@@ -239,14 +239,14 @@ public class InplaceStmtTransformer<T extends InplaceExprTransformer> extends Ab
                 spmdStmt.setMaxWorker(transformedMaxWorker);
                 spmdStmt.setStmtList(newStmtList);
 
-                return new LiteralBuilder<Stmt>().put(spmdStmt).asList();
+                return Collections.singletonList(spmdStmt);
             } else {
                 Expr transformedMinWorker = this.exprTransformer.transform(spmdStmt.getMinWorker());
 
                 spmdStmt.setMinWorker(transformedMinWorker);
                 spmdStmt.setStmtList(newStmtList);
 
-                return new LiteralBuilder<Stmt>().put(spmdStmt).asList();
+                return Collections.singletonList(spmdStmt);
             }
         } else {
             if (spmdStmt.hasMaxWorker()) {
@@ -255,11 +255,11 @@ public class InplaceStmtTransformer<T extends InplaceExprTransformer> extends Ab
                 spmdStmt.setMaxWorker(transformedMaxWorker);
                 spmdStmt.setStmtList(newStmtList);
 
-                return new LiteralBuilder<Stmt>().put(spmdStmt).asList();
+                return Collections.singletonList(spmdStmt);
             } else {
                 spmdStmt.setStmtList(newStmtList);
 
-                return new LiteralBuilder<Stmt>().put(spmdStmt).asList();
+                return Collections.singletonList(spmdStmt);
             }
         }
     }
