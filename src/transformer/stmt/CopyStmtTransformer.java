@@ -3,6 +3,7 @@ package transformer.stmt;
 import ast.*;
 import transformer.InvalidExprTransformer;
 import transformer.expr.CopyExprTransformer;
+import utils.MATLABCodeGenUtils.ASTListCollector;
 
 import java.util.Collections;
 import java.util.List;
@@ -43,10 +44,9 @@ public class CopyStmtTransformer<T extends CopyExprTransformer> extends Abstract
     protected List<Stmt> caseGlobalStmt(GlobalStmt globalStmt) {
         GlobalStmt copiedStmt = (GlobalStmt) ASTNodeHandle(globalStmt);
 
-        ast.List<Name> copiedGlobalVarNameList = new ast.List<>();
-        globalStmt.getNameList().stream()
-                .map(name -> new Name(name.getID()))
-                .forEachOrdered(copiedGlobalVarNameList::add);
+        ast.List<Name> copiedGlobalVarNameList = globalStmt.getNameList().stream()
+                .map(name -> (Name) ASTNodeHandle(name))
+                .collect(new ASTListCollector<>());
 
         copiedStmt.setNameList(copiedGlobalVarNameList);
 
@@ -57,10 +57,9 @@ public class CopyStmtTransformer<T extends CopyExprTransformer> extends Abstract
     protected List<Stmt> casePersistentStmt(PersistentStmt persistentStmt) {
         PersistentStmt copiedStmt = (PersistentStmt) ASTNodeHandle(persistentStmt);
 
-        ast.List<Name> copiedPersistentNameList = new ast.List<>();
-        persistentStmt.getNameList().stream()
-                .map(name -> new Name(name.getID()))
-                .forEachOrdered(copiedPersistentNameList::add);
+        ast.List<Name> copiedPersistentNameList = persistentStmt.getNameList().stream()
+                .map(name -> (Name) ASTNodeHandle(name))
+                .collect(new ASTListCollector<>());
 
         copiedStmt.setNameList(copiedPersistentNameList);
 
@@ -147,8 +146,10 @@ public class CopyStmtTransformer<T extends CopyExprTransformer> extends Abstract
                 .forEachOrdered(newCatchStmtList::addAll);
 
         if (tryStmt.hasCatchName()) {
+            Name catchName = (Name) ASTNodeHandle(tryStmt.getCatchName());
+
             TryStmt copiedStmt = (TryStmt) ASTNodeHandle(tryStmt);
-            copiedStmt.setCatchName(new Name(copiedStmt.getCatchName().getID()));
+            copiedStmt.setCatchName(catchName);
             copiedStmt.setTryStmtList(newTryStmtList);
             copiedStmt.setCatchStmtList(newCatchStmtList);
 

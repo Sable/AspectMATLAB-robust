@@ -1,6 +1,7 @@
 package transformer.expr;
 
 import ast.*;
+import utils.MATLABCodeGenUtils.ASTListCollector;
 
 public class CopyExprTransformer extends AbstractExprTransformer {
     @Override
@@ -46,7 +47,8 @@ public class CopyExprTransformer extends AbstractExprTransformer {
     @Override
     protected Expr caseFunctionHandleExpr(FunctionHandleExpr functionHandleExpr) {
         FunctionHandleExpr copiedExpr = (FunctionHandleExpr) ASTNodeHandle(functionHandleExpr);
-        copiedExpr.setName(new Name(functionHandleExpr.getName().getID()));
+        Name name = (Name) ASTNodeHandle(functionHandleExpr.getName());
+        copiedExpr.setName(name);
         return copiedExpr;
     }
 
@@ -56,8 +58,9 @@ public class CopyExprTransformer extends AbstractExprTransformer {
         Expr copiedLambdaBody = copyTransformer.transform(lambdaExpr.getBody());
 
         LambdaExpr copiedExpr = (LambdaExpr) ASTNodeHandle(lambdaExpr);
-        ast.List<Name> newInputPramList = new ast.List<>();
-        copiedExpr.getInputParamList().stream().forEachOrdered(name -> newInputPramList.add(new Name(name.getID())));
+        ast.List<Name> newInputPramList = copiedExpr.getInputParamList().stream()
+                .map(name -> (Name) ASTNodeHandle(name))
+                .collect(new ASTListCollector<>());
 
         copiedExpr.setInputParamList(newInputPramList);
         copiedExpr.setBody(copiedLambdaBody);
@@ -69,16 +72,16 @@ public class CopyExprTransformer extends AbstractExprTransformer {
     protected Expr caseCellArrayExpr(CellArrayExpr cellArrayExpr) {
         CellArrayExpr retExpr = (CellArrayExpr) ASTNodeHandle(cellArrayExpr);
 
-        ast.List<Row> newCellArrayRowList = new ast.List<>();
-        cellArrayExpr.getRowList().stream()
+        ast.List<Row> newCellArrayRowList = cellArrayExpr.getRowList().stream()
                 .map(row -> {
                     Row copiedRow = (Row) ASTNodeHandle(row);
-                    ast.List<Expr> newRowExprList = new ast.List<>();
-                    row.getElementList().stream().map(this::transform).forEachOrdered(newRowExprList::add);
+                    ast.List<Expr> newRowExprList = row.getElementList().stream()
+                            .map(this::transform)
+                            .collect(new ASTListCollector<>());
                     copiedRow.setElementList(newRowExprList);
                     return copiedRow;
                 })
-                .forEachOrdered(newCellArrayRowList::add);
+                .collect(new ASTListCollector<>());
 
         retExpr.setRowList(newCellArrayRowList);
 
@@ -89,8 +92,11 @@ public class CopyExprTransformer extends AbstractExprTransformer {
     protected Expr caseSuperClassMethodExpr(SuperClassMethodExpr superClassMethodExpr) {
         SuperClassMethodExpr copiedExpr = (SuperClassMethodExpr) ASTNodeHandle(superClassMethodExpr);
 
-        copiedExpr.setClassName(new Name(superClassMethodExpr.getClassName().getID()));
-        copiedExpr.setFuncName(new Name(superClassMethodExpr.getFuncName().getID()));
+        Name className = (Name) ASTNodeHandle(superClassMethodExpr.getClassName());
+        Name funcName = (Name) ASTNodeHandle(superClassMethodExpr.getFuncName());
+
+        copiedExpr.setClassName(className);
+        copiedExpr.setFuncName(funcName);
 
         return copiedExpr;
     }
@@ -98,8 +104,8 @@ public class CopyExprTransformer extends AbstractExprTransformer {
     @Override
     protected Expr caseNameExpr(NameExpr nameExpr) {
         NameExpr copiedExpr = (NameExpr) ASTNodeHandle(nameExpr);
-
-        copiedExpr.setName(new Name(nameExpr.getName().getID()));
+        Name name = (Name) ASTNodeHandle(nameExpr.getName());
+        copiedExpr.setName(name);
 
         return copiedExpr;
     }
@@ -111,10 +117,9 @@ public class CopyExprTransformer extends AbstractExprTransformer {
         Expr copiedTargetExpr = this.transform(parameterizedExpr.getTarget());
         retExpr.setTarget(copiedTargetExpr);
 
-        ast.List<Expr> newParameterList = new ast.List<>();
-        parameterizedExpr.getArgList().stream()
+        ast.List<Expr> newParameterList = parameterizedExpr.getArgList().stream()
                 .map(this::transform)
-                .forEachOrdered(newParameterList::add);
+                .collect(new ASTListCollector<>());
         retExpr.setArgList(newParameterList);
 
         return retExpr;
@@ -127,10 +132,9 @@ public class CopyExprTransformer extends AbstractExprTransformer {
         Expr copiedTarget = this.transform(cellIndexExpr.getTarget());
         retExpr.setTarget(copiedTarget);
 
-        ast.List<Expr> newParameterList = new ast.List<>();
-        cellIndexExpr.getArgList().stream()
+        ast.List<Expr> newParameterList = cellIndexExpr.getArgList().stream()
                 .map(this::transform)
-                .forEachOrdered(newParameterList::add);
+                .collect(new ASTListCollector<>());
         retExpr.setArgList(newParameterList);
 
         return retExpr;
@@ -151,16 +155,16 @@ public class CopyExprTransformer extends AbstractExprTransformer {
         MatrixExpr retExpr = (MatrixExpr) ASTNodeHandle(matrixExpr);
 
 
-        ast.List<Row> newMatrixRowList = new ast.List<>();
-        matrixExpr.getRowList().stream()
+        ast.List<Row> newMatrixRowList = matrixExpr.getRowList().stream()
                 .map(row -> {
                     Row copiedRow = (Row) ASTNodeHandle(row);
-                    ast.List<Expr> newRowExprList = new ast.List<>();
-                    row.getElementList().stream().map(this::transform).forEachOrdered(newRowExprList::add);
+                    ast.List<Expr> newRowExprList = row.getElementList().stream()
+                            .map(this::transform)
+                            .collect(new ASTListCollector<>());
                     copiedRow.setElementList(newRowExprList);
                     return copiedRow;
                 })
-                .forEachOrdered(newMatrixRowList::add);
+                .collect(new ASTListCollector<>());
         retExpr.setRowList(newMatrixRowList);
 
         return retExpr;
@@ -181,7 +185,7 @@ public class CopyExprTransformer extends AbstractExprTransformer {
         return stringLiteralExpr.treeCopy();
     }
 
-    private final UnaryExpr unaryOperatorDispatch(UnaryExpr unaryExpr) {
+    private UnaryExpr unaryOperatorDispatch(UnaryExpr unaryExpr) {
         UnaryExpr retExpr = (UnaryExpr) ASTNodeHandle(unaryExpr);
         Expr copiedOperand = this.transform(unaryExpr.getOperand());
         retExpr.setOperand(copiedOperand);
@@ -213,7 +217,7 @@ public class CopyExprTransformer extends AbstractExprTransformer {
         return unaryOperatorDispatch(arrayTransposeExpr);
     }
 
-    private final BinaryExpr binaryOperatorDispatch(BinaryExpr binaryExpr) {
+    private BinaryExpr binaryOperatorDispatch(BinaryExpr binaryExpr) {
         BinaryExpr retExpr = (BinaryExpr) ASTNodeHandle(binaryExpr);
         Expr copiedLHS = this.transform(binaryExpr.getLHS());
         Expr copiedRHS = this.transform(binaryExpr.getRHS());

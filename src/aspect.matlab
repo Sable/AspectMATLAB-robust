@@ -1,10 +1,8 @@
-aspect_ aspect
-
-actions
-    a : before (get(ab) | set(ab)) & istype(integer) : ()
-        a = 1 + 2;
-    end
-
-end
-
+function runner(size)
+    x = 8 - 20;
+    y = 1 + 7;
+    tic();
+    x = rand([1,size]);
+    elapsedTime = toc();
+    y = rand();
 end

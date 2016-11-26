@@ -1,4 +1,4 @@
-package utils;
+package utils.MATLABCodeGenUtils;
 
 import ast.ASTNode;
 import ast.List;
@@ -11,7 +11,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 
-public class ASTListCollector<T extends ASTNode> implements Collector<T, ast.List<T>, ast.List<T>> {
+public final class ASTListCollector<T extends ASTNode> implements Collector<T, ast.List<T>, ast.List<T>> {
     @Override
     public Supplier<List<T>> supplier() {
         return ast.List<T>::new;

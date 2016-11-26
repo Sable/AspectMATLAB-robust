@@ -5,15 +5,14 @@ import Matlab.Transformer.NodeToAstTransformer;
 import Matlab.Utils.IReport;
 import Matlab.Utils.Message;
 import Matlab.Utils.Result;
-import abstractPattern.Action;
 import ast.*;
 import transformer.expr.CopyExprTransformer;
-import transformer.expr.examples.IntLiteralsTransform;
 import transformer.program.CopyProgramTransformer;
 import transformer.stmt.CopyStmtTransformer;
+import utils.MATLABCodeGenUtils.ParameterizedExprBuilder;
 
-import java.util.HashMap;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.*;
+import java.util.List;
 
 public class Main {
     public static CompilationUnits parseOrDie(String path) {
@@ -40,10 +39,29 @@ public class Main {
         final String path = "/Users/k9/Desktop/AspectMATLAB/src/aspect.matlab";
         CompilationUnits compilationUnits = parseOrDie(path);
 
-        CopyProgramTransformer<CopyStmtTransformer<CopyExprTransformer>> transformer =
-                new CopyProgramTransformer<>(new CopyStmtTransformer<>(new IntLiteralsTransform(x -> x + 1)));
+        CopyProgramTransformer<DemoStmtTransformer> transformer = new CopyProgramTransformer<>(
+                new DemoStmtTransformer()
+        );
+        System.out.println(compilationUnits.getPrettyPrinted());
+        compilationUnits = transformer.transform(compilationUnits);
+        System.out.println(compilationUnits.getPrettyPrinted());
 
-        System.out.println(transformer.transform(compilationUnits).getPrettyPrinted());
+    }
+}
 
+class DemoStmtTransformer extends CopyStmtTransformer<CopyExprTransformer> {
+    public DemoStmtTransformer() {
+        super(new CopyExprTransformer());
+    }
+
+    @Override
+    protected List<Stmt> caseAssignStmt(AssignStmt assignStmt) {
+        List<Stmt> retList = new LinkedList<>(super.caseAssignStmt(assignStmt));
+        retList.add(new ExprStmt(new ParameterizedExprBuilder()
+                .setTarget("disp")
+                .addParameter("Ding!")
+                .build()
+        ));
+        return retList;
     }
 }
