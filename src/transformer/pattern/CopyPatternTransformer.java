@@ -1,7 +1,7 @@
 package transformer.pattern;
 
 import ast.*;
-import utils.MATLABCodeGenUtils.ASTListCollector;
+import utils.codeGen.collectors.ASTListCollector;
 
 public class CopyPatternTransformer extends AbstractPatternTransformer {
     @Override
@@ -309,7 +309,7 @@ public class CopyPatternTransformer extends AbstractPatternTransformer {
             Name identifier = (Name) ASTNodeHandle(patternSet.getIdentifier());
             FullSignature copiedFullSignature = this.copyFullSignature(patternSet.getFullSignature());
 
-            PatternGet copiedPattern = (PatternGet) ASTNodeHandle(patternSet);
+            PatternSet copiedPattern = (PatternSet) ASTNodeHandle(patternSet);
             copiedPattern.setIdentifier(identifier);
             copiedPattern.setFullSignature(copiedFullSignature);
 
@@ -317,7 +317,7 @@ public class CopyPatternTransformer extends AbstractPatternTransformer {
         } else {
             Name identifier = (Name) ASTNodeHandle(patternSet.getIdentifier());
 
-            PatternGet copiedPattern = (PatternGet) ASTNodeHandle(patternSet);
+            PatternSet copiedPattern = (PatternSet) ASTNodeHandle(patternSet);
             copiedPattern.setIdentifier(identifier);
 
             return copiedPattern;

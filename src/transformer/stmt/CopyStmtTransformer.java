@@ -3,7 +3,8 @@ package transformer.stmt;
 import ast.*;
 import transformer.InvalidExprTransformer;
 import transformer.expr.CopyExprTransformer;
-import utils.MATLABCodeGenUtils.ASTListCollector;
+import utils.codeGen.collectors.ASTListCollector;
+import utils.codeGen.collectors.ASTListMergeCollector;
 
 import java.util.Collections;
 import java.util.List;
@@ -104,10 +105,9 @@ public class CopyStmtTransformer<T extends CopyExprTransformer> extends Abstract
         assert transformedAssignStmt.size() == 1;
         assert transformedAssignStmt.get(0) instanceof AssignStmt;
 
-        ast.List<Stmt> newStmtList = new ast.List<>();
-        forStmt.getStmtList().stream()
+        ast.List<Stmt> newStmtList = forStmt.getStmtList().stream()
                 .map(this::transform)
-                .forEachOrdered(newStmtList::addAll);
+                .collect(new ASTListMergeCollector<>());
 
         ForStmt copiedStmt = (ForStmt) ASTNodeHandle(forStmt);
         copiedStmt.setAssignStmt((AssignStmt) transformedAssignStmt.get(0));
@@ -120,10 +120,9 @@ public class CopyStmtTransformer<T extends CopyExprTransformer> extends Abstract
     protected List<Stmt> caseWhileStmt(WhileStmt whileStmt) {
         Expr transformedConditionExpr = this.exprTransformer.transform(whileStmt.getExpr());
 
-        ast.List<Stmt> newStmtList = new ast.List<>();
-        whileStmt.getStmtList().stream()
+        ast.List<Stmt> newStmtList = whileStmt.getStmtList().stream()
                 .map(this::transform)
-                .forEachOrdered(newStmtList::addAll);
+                .collect(new ASTListMergeCollector<>());
 
         WhileStmt copiedStmt = (WhileStmt) ASTNodeHandle(whileStmt);
         copiedStmt.setExpr(transformedConditionExpr);
@@ -134,16 +133,12 @@ public class CopyStmtTransformer<T extends CopyExprTransformer> extends Abstract
 
     @Override
     protected List<Stmt> caseTryStmt(TryStmt tryStmt) {
-        ast.List<Stmt> newTryStmtList = new ast.List<>();
-        ast.List<Stmt> newCatchStmtList = new ast.List<>();
-
-        tryStmt.getTryStmtList().stream()
+        ast.List<Stmt> newTryStmtList = tryStmt.getTryStmtList().stream()
                 .map(this::transform)
-                .forEachOrdered(newTryStmtList::addAll);
-
-        tryStmt.getCatchStmtList().stream()
+                .collect(new ASTListMergeCollector<>());
+        ast.List<Stmt> newCatchStmtList = tryStmt.getCatchStmtList().stream()
                 .map(this::transform)
-                .forEachOrdered(newCatchStmtList::addAll);
+                .collect(new ASTListMergeCollector<>());
 
         if (tryStmt.hasCatchName()) {
             Name catchName = (Name) ASTNodeHandle(tryStmt.getCatchName());
@@ -167,10 +162,9 @@ public class CopyStmtTransformer<T extends CopyExprTransformer> extends Abstract
     protected List<Stmt> caseSwitchStmt(SwitchStmt switchStmt) {
         Expr transformedSwitchExpr = this.exprTransformer.transform(switchStmt.getExpr());
 
-        ast.List<SwitchCaseBlock> newCaseBlockList = new ast.List<>();
-        switchStmt.getSwitchCaseBlockList().stream()
+        ast.List<SwitchCaseBlock> newCaseBlockList = switchStmt.getSwitchCaseBlockList().stream()
                 .map(this::caseSwitchCaseBlock)
-                .forEachOrdered(newCaseBlockList::addAll);
+                .collect(new ASTListMergeCollector<>());
 
         if (switchStmt.hasDefaultCaseBlock()) {
             DefaultCaseBlock transformedDefaultCaseBlock = this.caseDefaultCaseBlock(switchStmt.getDefaultCaseBlock());
@@ -196,10 +190,9 @@ public class CopyStmtTransformer<T extends CopyExprTransformer> extends Abstract
 
         Expr copiedConditionExpr = this.exprTransformer.transform(copiedBlock.getExpr());
         copiedBlock.setExpr(copiedConditionExpr);
-        ast.List<Stmt> newStmtList = new ast.List<>();
-        switchCaseBlock.getStmtList().stream()
+        ast.List<Stmt> newStmtList = switchCaseBlock.getStmtList().stream()
                 .map(this::transform)
-                .forEachOrdered(newStmtList::addAll);
+                .collect(new ASTListMergeCollector<>());
 
         copiedBlock.setStmtList(newStmtList);
 
@@ -210,10 +203,9 @@ public class CopyStmtTransformer<T extends CopyExprTransformer> extends Abstract
     protected DefaultCaseBlock caseDefaultCaseBlock(DefaultCaseBlock defaultCaseBlock) {
         DefaultCaseBlock copiedBlock = (DefaultCaseBlock) ASTNodeHandle(defaultCaseBlock);
 
-        ast.List<Stmt> newStmtList = new ast.List<>();
-        defaultCaseBlock.getStmtList().stream()
+        ast.List<Stmt> newStmtList = defaultCaseBlock.getStmtList().stream()
                 .map(this::transform)
-                .forEachOrdered(newStmtList::addAll);
+                .collect(new ASTListMergeCollector<>());
 
         copiedBlock.setStmtList(newStmtList);
 
@@ -222,10 +214,9 @@ public class CopyStmtTransformer<T extends CopyExprTransformer> extends Abstract
 
     @Override
     protected List<Stmt> caseIfStmt(IfStmt ifStmt) {
-        ast.List<IfBlock> newIfBlockList = new ast.List<>();
-        ifStmt.getIfBlockList().stream()
+        ast.List<IfBlock> newIfBlockList = ifStmt.getIfBlockList().stream()
                 .map(this::caseIfBlock)
-                .forEachOrdered(newIfBlockList::addAll);
+                .collect(new ASTListMergeCollector<>());
 
         if (ifStmt.hasElseBlock()) {
             ElseBlock copiedElseBlock = this.caseElseBlock(ifStmt.getElseBlock());
@@ -248,10 +239,9 @@ public class CopyStmtTransformer<T extends CopyExprTransformer> extends Abstract
     protected List<IfBlock> caseIfBlock(IfBlock ifBlock) {
         Expr copiedConditionExpr = this.exprTransformer.transform(ifBlock.getCondition());
 
-        ast.List<Stmt> newStmtList = new ast.List<>();
-        ifBlock.getStmtList().stream()
+        ast.List<Stmt> newStmtList = ifBlock.getStmtList().stream()
                 .map(this::transform)
-                .forEachOrdered(newStmtList::addAll);
+                .collect(new ASTListMergeCollector<>());
 
         IfBlock copiedBlock = (IfBlock) ASTNodeHandle(ifBlock);
 
@@ -263,11 +253,9 @@ public class CopyStmtTransformer<T extends CopyExprTransformer> extends Abstract
 
     @Override
     protected ElseBlock caseElseBlock(ElseBlock elseBlock) {
-        ast.List<Stmt> newStmtList = new ast.List<>();
-
-        elseBlock.getStmtList().stream()
+        ast.List<Stmt> newStmtList = elseBlock.getStmtList().stream()
                 .map(this::transform)
-                .forEachOrdered(newStmtList::addAll);
+                .collect(new ASTListMergeCollector<>());
 
         ElseBlock copiedBlock = (ElseBlock) ASTNodeHandle(elseBlock);
 
@@ -278,11 +266,9 @@ public class CopyStmtTransformer<T extends CopyExprTransformer> extends Abstract
 
     @Override
     protected List<Stmt> caseSpmdStmt(SpmdStmt spmdStmt) {
-        ast.List<Stmt> newStmtList = new ast.List<>();
-
-        spmdStmt.getStmtList().stream()
+        ast.List<Stmt> newStmtList = spmdStmt.getStmtList().stream()
                 .map(this::transform)
-                .forEachOrdered(newStmtList::addAll);
+                .collect(new ASTListMergeCollector<>());
 
         if (spmdStmt.hasMinWorker()) {
             if (spmdStmt.hasMaxWorker()) {

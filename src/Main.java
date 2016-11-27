@@ -7,9 +7,11 @@ import Matlab.Utils.Message;
 import Matlab.Utils.Result;
 import ast.*;
 import transformer.expr.CopyExprTransformer;
+import transformer.pattern.CopyPatternTransformer;
 import transformer.program.CopyProgramTransformer;
 import transformer.stmt.CopyStmtTransformer;
-import utils.MATLABCodeGenUtils.ParameterizedExprBuilder;
+import utils.codeGen.builders.IntLiteralExprBuilder;
+import utils.codeGen.builders.ParameterizedExprBuilder;
 
 import java.util.*;
 import java.util.List;
@@ -39,19 +41,34 @@ public class Main {
         final String path = "/Users/k9/Desktop/AspectMATLAB/src/aspect.matlab";
         CompilationUnits compilationUnits = parseOrDie(path);
 
-        CopyProgramTransformer<DemoStmtTransformer> transformer = new CopyProgramTransformer<>(
-                new DemoStmtTransformer()
+        CopyProgramTransformer<DemoStmtTransformer, CopyPatternTransformer> transformer = new CopyProgramTransformer<>(
+                new DemoStmtTransformer(), new CopyPatternTransformer()
         );
         System.out.println(compilationUnits.getPrettyPrinted());
         compilationUnits = transformer.transform(compilationUnits);
         System.out.println(compilationUnits.getPrettyPrinted());
-
     }
 }
 
 class DemoStmtTransformer extends CopyStmtTransformer<CopyExprTransformer> {
     public DemoStmtTransformer() {
-        super(new CopyExprTransformer());
+        super(new CopyExprTransformer(){
+            @Override
+            protected Expr casePlusExpr(PlusExpr plusExpr) {
+                Expr lhs = this.transform(plusExpr.getLHS());
+                Expr rhs = this.transform(plusExpr.getRHS());
+                if (lhs instanceof IntLiteralExpr && rhs instanceof IntLiteralExpr) {
+                    int lhsValue = ((IntLiteralExpr) lhs).getValue().getValue().intValue();
+                    int rhsValue = ((IntLiteralExpr) rhs).getValue().getValue().intValue();
+                    return new IntLiteralExprBuilder().setValue(lhsValue + rhsValue).build();
+                } else {
+                    PlusExpr copiedExpr = (PlusExpr) this.ASTNodeHandle(plusExpr);
+                    copiedExpr.setLHS(lhs);
+                    copiedExpr.setRHS(rhs);
+                    return copiedExpr;
+                }
+            }
+        });
     }
 
     @Override
@@ -59,7 +76,7 @@ class DemoStmtTransformer extends CopyStmtTransformer<CopyExprTransformer> {
         List<Stmt> retList = new LinkedList<>(super.caseAssignStmt(assignStmt));
         retList.add(new ExprStmt(new ParameterizedExprBuilder()
                 .setTarget("disp")
-                .addParameter("Ding!")
+                .addParameter(new StringLiteralExpr(assignStmt.getPrettyPrinted().trim()))
                 .build()
         ));
         return retList;

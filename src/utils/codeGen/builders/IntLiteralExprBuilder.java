@@ -1,4 +1,4 @@
-package utils.MATLABCodeGenUtils;
+package utils.codeGen.builders;
 
 import ast.Expr;
 import ast.IntLiteralExpr;

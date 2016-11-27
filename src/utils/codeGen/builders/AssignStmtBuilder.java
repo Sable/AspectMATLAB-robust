@@ -1,4 +1,4 @@
-package utils.MATLABCodeGenUtils;
+package utils.codeGen.builders;
 
 import ast.AssignStmt;
 import ast.Expr;
@@ -14,14 +14,17 @@ public final class AssignStmtBuilder {
         this.lhs = Optional.ofNullable(lhs).orElseThrow(NullPointerException::new);
         return this;
     }
+
     public AssignStmtBuilder setRHS(Expr rhs) {
         this.rhs = Optional.ofNullable(rhs).orElseThrow(NullPointerException::new);
         return this;
     }
+
     public AssignStmtBuilder setOutputSuppressed(boolean outputSuppressed) {
         this.outputSuppressed = outputSuppressed;
         return this;
     }
+
     public AssignStmt build() {
         AssignStmt retStmt = new AssignStmt();
         retStmt.setLHS(Optional.ofNullable(lhs).orElseThrow(NullPointerException::new));

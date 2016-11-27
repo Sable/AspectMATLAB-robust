@@ -2,16 +2,20 @@ package transformer.program;
 
 import ast.*;
 import transformer.expr.CopyExprTransformer;
+import transformer.pattern.CopyPatternTransformer;
 import transformer.stmt.CopyStmtTransformer;
-import utils.MATLABCodeGenUtils.ASTListCollector;
+import utils.codeGen.collectors.ASTListCollector;
+import utils.codeGen.collectors.ASTListMergeCollector;
 
 import java.util.Collections;
 import java.util.function.Consumer;
 import java.util.List;
 
-public class CopyProgramTransformer<TStmt extends CopyStmtTransformer> extends AbstractProgramTransformer<TStmt> {
-    public CopyProgramTransformer(TStmt statementTransformer) {
-        super(statementTransformer);
+public class CopyProgramTransformer
+        <TStmt extends CopyStmtTransformer, TPattern extends CopyPatternTransformer>
+        extends AbstractProgramTransformer<TStmt, TPattern> {
+    public CopyProgramTransformer(TStmt statementTransformer, TPattern patternTransformer) {
+        super(statementTransformer, patternTransformer);
     }
 
     @Override
@@ -49,10 +53,9 @@ public class CopyProgramTransformer<TStmt extends CopyStmtTransformer> extends A
 
     @Override
     public Program caseFunctionList(FunctionList functionList) {
-        ast.List<Function> newFunctionList = new ast.List<>();
-        functionList.getFunctionList().stream()
+        ast.List<Function> newFunctionList = functionList.getFunctionList().stream()
                 .map(this::caseFunction)
-                .forEachOrdered(newFunctionList::addAll);
+                .collect(new ASTListMergeCollector<>());
 
         FunctionList copiedProgram = (FunctionList) ASTNodeHandle(functionList);
         copiedProgram.setFunctionList(newFunctionList);
@@ -118,11 +121,61 @@ public class CopyProgramTransformer<TStmt extends CopyStmtTransformer> extends A
     }
 
     @Override
+    public Program caseAspectDef(AspectDef aspectDef) {
+        ast.List<Properties> newPropertiesList = new ast.List<>();
+        ast.List<Methods> newMethodsList = new ast.List<>();
+        ast.List<ClassEvents> newClassEventsList = new ast.List<>();
+        ast.List<Enumerations> newEnumerationsList = new ast.List<>();
+        ast.List<Patterns> newPatternsList = new ast.List<>();
+        ast.List<Actions> newActionsList = new ast.List<>();
+
+        final Consumer<List<ClassBody>> resultDispatcher = returnList -> returnList.forEach(classBody -> {
+            if (classBody instanceof Properties) {
+                newPropertiesList.add(((Properties) classBody));
+            } else if (classBody instanceof Methods) {
+                newMethodsList.add(((Methods) classBody));
+            } else if (classBody instanceof ClassEvents) {
+                newClassEventsList.add(((ClassEvents) classBody));
+            } else if (classBody instanceof Enumerations) {
+                newEnumerationsList.add(((Enumerations) classBody));
+            } else if (classBody instanceof Patterns) {
+                newPatternsList.add(((Patterns) classBody));
+            } else if (classBody instanceof Actions) {
+                newActionsList.add(((Actions) classBody));
+            } else {
+                /* control flow should not reach here */
+                throw new AssertionError();
+            }
+        });
+
+        aspectDef.getPropertyList().stream().map(this::caseProperties).forEachOrdered(resultDispatcher);
+        aspectDef.getMethodList().stream().map(this::caseMethods).forEachOrdered(resultDispatcher);
+        aspectDef.getClassEventList().stream().map(this::caseClassEvents).forEachOrdered(resultDispatcher);
+        aspectDef.getEnumerationList().stream().map(this::caseEnumerations).forEachOrdered(resultDispatcher);
+        aspectDef.getPatternList().stream().map(this::casePatterns).forEachOrdered(resultDispatcher);
+        aspectDef.getActionList().stream().map(this::caseActions).forEachOrdered(resultDispatcher);
+
+        ast.List<HelpComment> newHelpCommentList = aspectDef.getHelpCommentList().stream()
+                .map(comment -> (HelpComment) ASTNodeHandle(comment))
+                .collect(new ASTListCollector<>());
+
+        AspectDef copiedAspectDef = (AspectDef) ASTNodeHandle(aspectDef);
+        copiedAspectDef.setHelpCommentList(newHelpCommentList);
+        copiedAspectDef.setPropertyList(newPropertiesList);
+        copiedAspectDef.setMethodList(newMethodsList);
+        copiedAspectDef.setClassEventList(newClassEventsList);
+        copiedAspectDef.setEnumerationList(newEnumerationsList);
+        copiedAspectDef.setPatternList(newPatternsList);
+        copiedAspectDef.setActionList(newActionsList);
+
+        return copiedAspectDef;
+    }
+
+    @Override
     public List<ClassBody> caseProperties(Properties properties) {
-        ast.List<Property> newPropertiesList = new ast.List<>();
-        properties.getPropertyList().stream()
+        ast.List<Property> newPropertiesList = properties.getPropertyList().stream()
                 .map(this::caseProperty)
-                .forEachOrdered(newPropertiesList::addAll);
+                .collect(new ASTListMergeCollector<>());
         ast.List<Attribute> newAttributeList = properties.getAttributeList().stream()
                 .map(attribute -> {
                     Attribute copiedAttribute = (Attribute) ASTNodeHandle(attribute);
@@ -142,25 +195,21 @@ public class CopyProgramTransformer<TStmt extends CopyStmtTransformer> extends A
 
     @Override
     public List<ClassBody> caseMethods(Methods methods) {
-        ast.List<Function> newFunctionList = new ast.List<>();
-        methods.getFunctionList().stream()
+        ast.List<Function> newFunctionList = methods.getFunctionList().stream()
                 .map(this::caseFunction)
-                .forEachOrdered(newFunctionList::addAll);
+                .collect(new ASTListMergeCollector<>());
 
-        ast.List<PropertyAccess> newPropertyAccessList = new ast.List<>();
-        methods.getPropAccList().stream()
+        ast.List<PropertyAccess> newPropertyAccessList = methods.getPropAccList().stream()
                 .map(this::casePropertyAccess)
-                .forEachOrdered(newPropertyAccessList::addAll);
+                .collect(new ASTListMergeCollector<>());
 
-        ast.List<Signature> newSignatureList = new ast.List<>();
-        methods.getSignatureList().stream()
+        ast.List<Signature> newSignatureList = methods.getSignatureList().stream()
                 .map(this::caseSignature)
-                .forEachOrdered(newSignatureList::addAll);
+                .collect(new ASTListMergeCollector<>());
 
-        ast.List<PropertyAccessSignature> newPropertyAccessSignatureList = new ast.List<>();
-        methods.getPropAccSigList().stream()
+        ast.List<PropertyAccessSignature> newPropertyAccessSignatureList = methods.getPropAccSigList().stream()
                 .map(this::casePropertyAccessSignature)
-                .forEachOrdered(newPropertyAccessSignatureList::addAll);
+                .collect(new ASTListMergeCollector<>());
 
         ast.List<Attribute> newAttributeList = methods.getAttributeList().stream()
                 .map(attribute -> {
@@ -184,10 +233,9 @@ public class CopyProgramTransformer<TStmt extends CopyStmtTransformer> extends A
 
     @Override
     public List<ClassBody> caseClassEvents(ClassEvents classEvents) {
-        ast.List<Event> newEventList = new ast.List<>();
-        classEvents.getEventList().stream()
+        ast.List<Event> newEventList = classEvents.getEventList().stream()
                 .map(this::caseEvent)
-                .forEachOrdered(newEventList::addAll);
+                .collect(new ASTListMergeCollector<>());
 
         ast.List<Attribute> newAttributeList = classEvents.getAttributeList().stream()
                 .map(attribute -> {
@@ -208,10 +256,9 @@ public class CopyProgramTransformer<TStmt extends CopyStmtTransformer> extends A
 
     @Override
     public List<ClassBody> caseEnumerations(Enumerations enumerations) {
-        ast.List<Enumeration> newEnumerationList = new ast.List<>();
-        enumerations.getEnumerationList().stream()
+        ast.List<Enumeration> newEnumerationList = enumerations.getEnumerationList().stream()
                 .map(this::caseEnumeration)
-                .forEachOrdered(newEnumerationList::addAll);
+                .collect(new ASTListMergeCollector<>());
 
         ast.List<Attribute> newAttributeList = enumerations.getAttributeList().stream()
                 .map(attribute -> {
@@ -231,6 +278,30 @@ public class CopyProgramTransformer<TStmt extends CopyStmtTransformer> extends A
     }
 
     @Override
+    public List<ClassBody> casePatterns(Patterns patterns) {
+        ast.List<Pattern> newPatternList = patterns.getPatternList().stream()
+                .map(this::casePattern)
+                .collect(new ASTListMergeCollector<>());
+
+        Patterns copiedClassBody = (Patterns) ASTNodeHandle(patterns);
+        copiedClassBody.setPatternList(newPatternList);
+
+        return Collections.singletonList(copiedClassBody);
+    }
+
+    @Override
+    public List<ClassBody> caseActions(Actions actions) {
+        ast.List<Action> newActionList = actions.getActionList().stream()
+                .map(this::caseAction)
+                .collect(new ASTListMergeCollector<>());
+
+        Actions copiedClassBody = (Actions) ASTNodeHandle(actions);
+        copiedClassBody.setActionList(newActionList);
+
+        return Collections.singletonList(copiedClassBody);
+    }
+
+    @Override
     public List<Property> caseProperty(Property property) {
         Expr copiedInitExpr = this.expressionTransformer.transform(property.getExpr());
 
@@ -242,10 +313,9 @@ public class CopyProgramTransformer<TStmt extends CopyStmtTransformer> extends A
 
     @Override
     public List<Function> caseFunction(Function function) {
-        ast.List<Function> newNestedFunctionList = new ast.List<>();
-        function.getNestedFunctionList().stream()
+        ast.List<Function> newNestedFunctionList = function.getNestedFunctionList().stream()
                 .map(this::caseFunction)
-                .forEachOrdered(newNestedFunctionList::addAll);
+                .collect(new ASTListMergeCollector<>());
         ast.List<HelpComment> newHelpCommentList = function.getHelpCommentList().stream()
                 .map(comment -> (HelpComment) ASTNodeHandle(comment))
                 .collect(new ASTListCollector<>());
@@ -301,10 +371,9 @@ public class CopyProgramTransformer<TStmt extends CopyStmtTransformer> extends A
         propertyAccess.getStmtList().stream()
                 .map(this.statementTransformer::transform)
                 .forEachOrdered(newStmtList::addAll);
-        ast.List<Function> newNestedFunctionList = new ast.List<>();
-        propertyAccess.getNestedFunctionList().stream()
+        ast.List<Function> newNestedFunctionList = propertyAccess.getNestedFunctionList().stream()
                 .map(this::caseFunction)
-                .forEachOrdered(newNestedFunctionList::addAll);
+                .collect(new ASTListMergeCollector<>());
 
         PropertyAccess copiedPropertyAccess = (PropertyAccess) ASTNodeHandle(propertyAccess);
         copiedPropertyAccess.setOutputParamList(newOutputParamList);
@@ -347,5 +416,37 @@ public class CopyProgramTransformer<TStmt extends CopyStmtTransformer> extends A
         copiedEnumeration.setExprList(newExprList);
 
         return Collections.singletonList(copiedEnumeration);
+    }
+
+    @Override
+    public List<Pattern> casePattern(Pattern pattern) {
+        Expr transformedPattern = this.patternTransformer.transform(pattern.getExpr());
+
+        Pattern copiedPattern = (Pattern) ASTNodeHandle(pattern);
+        copiedPattern.setExpr(transformedPattern);
+        return Collections.singletonList(copiedPattern);
+    }
+
+    @Override
+    public List<Action> caseAction(Action action) {
+        Expr transformedPattern = this.patternTransformer.transform(action.getExpr());
+        ast.List<Name> newInputParamList = action.getInputParamList().stream()
+                .map(parameter -> (Name) ASTNodeHandle(parameter))
+                .collect(new ASTListCollector<>());
+        ast.List<Stmt> newStmtList = new ast.List<>();
+        action.getStmtList().stream()
+                .map(this.statementTransformer::transform)
+                .forEachOrdered(newStmtList::addAll);
+        ast.List<Function> newNestedFunctionList = action.getNestedFunctionList().stream()
+                .map(this::caseFunction)
+                .collect(new ASTListMergeCollector<>());
+
+        Action copiedAction = (Action) ASTNodeHandle(action);
+        copiedAction.setExpr(transformedPattern);
+        copiedAction.setInputParamList(newInputParamList);
+        copiedAction.setStmtList(newStmtList);
+        copiedAction.setNestedFunctionList(newNestedFunctionList);
+
+        return Collections.singletonList(copiedAction);
     }
 }

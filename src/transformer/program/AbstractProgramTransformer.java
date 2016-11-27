@@ -3,17 +3,34 @@ package transformer.program;
 import ast.*;
 import transformer.ASTNodeTransformer;
 import transformer.expr.AbstractExprTransformer;
+import transformer.pattern.AbstractPatternTransformer;
 import transformer.stmt.AbstractStmtTransformer;
 
 import java.util.List;
 
-public abstract class AbstractProgramTransformer<TStmt extends AbstractStmtTransformer> implements ASTNodeTransformer {
+public abstract class AbstractProgramTransformer
+        <TStmt extends AbstractStmtTransformer, TPattern extends AbstractPatternTransformer>
+        implements ASTNodeTransformer {
     protected final TStmt statementTransformer;
     protected final AbstractExprTransformer expressionTransformer;
+    protected final TPattern patternTransformer;
 
-    public AbstractProgramTransformer(TStmt statementTransformer) {
+    public AbstractProgramTransformer(TStmt statementTransformer, TPattern patternTransformer) {
         this.statementTransformer = statementTransformer;
         this.expressionTransformer = statementTransformer.getExprTransformer();
+        this.patternTransformer = patternTransformer;
+    }
+
+    public TStmt getStatementTransformer() {
+        return statementTransformer;
+    }
+
+    public AbstractExprTransformer getExpressionTransformer() {
+        return expressionTransformer;
+    }
+
+    public TPattern getPatternTransformer() {
+        return patternTransformer;
     }
 
     @Override
@@ -28,15 +45,18 @@ public abstract class AbstractProgramTransformer<TStmt extends AbstractStmtTrans
             return caseFunctionList(((FunctionList) program));
         } else if (program instanceof ClassDef) {
             return caseClassDef(((ClassDef) program));
+        } else if (program instanceof AspectDef) {
+            return caseAspectDef(((AspectDef) program));
         } else {
             /* control flow should not reach here */
-            throw new AssertionError();
+                throw new AssertionError();
         }
     }
 
     public abstract Program caseScript(Script script);
     public abstract Program caseFunctionList(FunctionList functionList);
     public abstract Program caseClassDef(ClassDef classDef);
+    public abstract Program caseAspectDef(AspectDef aspectDef);
 
     public List<ClassBody> caseClassBody(ClassBody classBody) {
         if (classBody instanceof Properties) {
@@ -47,6 +67,10 @@ public abstract class AbstractProgramTransformer<TStmt extends AbstractStmtTrans
             return caseClassEvents(((ClassEvents) classBody));
         } else if (classBody instanceof Enumerations) {
             return caseEnumerations(((Enumerations) classBody));
+        } else if (classBody instanceof Patterns) {
+            return casePatterns(((Patterns) classBody));
+        } else if (classBody instanceof Actions) {
+            return caseActions(((Actions) classBody));
         } else {
             /* control flow should not reach here */
             throw new AssertionError();
@@ -57,6 +81,8 @@ public abstract class AbstractProgramTransformer<TStmt extends AbstractStmtTrans
     public abstract List<ClassBody> caseMethods(Methods methods);
     public abstract List<ClassBody> caseClassEvents(ClassEvents classEvents);
     public abstract List<ClassBody> caseEnumerations(Enumerations enumerations);
+    public abstract List<ClassBody> casePatterns(Patterns patterns);
+    public abstract List<ClassBody> caseActions(Actions actions);
 
     public abstract List<Property> caseProperty(Property property);
 
@@ -67,4 +93,7 @@ public abstract class AbstractProgramTransformer<TStmt extends AbstractStmtTrans
 
     public abstract List<Event> caseEvent(Event event);
     public abstract List<Enumeration> caseEnumeration(Enumeration enumeration);
+
+    public abstract List<Pattern> casePattern(Pattern pattern);
+    public abstract List<Action> caseAction(Action action);
 }
