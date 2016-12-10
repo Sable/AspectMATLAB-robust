@@ -6,6 +6,7 @@ import Matlab.Utils.IReport;
 import Matlab.Utils.Message;
 import Matlab.Utils.Result;
 import ast.*;
+import transformer.aspect.AspectExprTransformer;
 import transformer.expr.CopyExprTransformer;
 import transformer.pattern.CopyPatternTransformer;
 import transformer.program.CopyProgramTransformer;
@@ -41,44 +42,12 @@ public class Main {
         final String path = "/Users/k9/Desktop/AspectMATLAB/src/aspect.matlab";
         CompilationUnits compilationUnits = parseOrDie(path);
 
-        CopyProgramTransformer<DemoStmtTransformer, CopyPatternTransformer> transformer = new CopyProgramTransformer<>(
-                new DemoStmtTransformer(), new CopyPatternTransformer()
-        );
-        System.out.println(compilationUnits.getPrettyPrinted());
-        compilationUnits = transformer.transform(compilationUnits);
-        System.out.println(compilationUnits.getPrettyPrinted());
-    }
-}
-
-class DemoStmtTransformer extends CopyStmtTransformer<CopyExprTransformer> {
-    public DemoStmtTransformer() {
-        super(new CopyExprTransformer(){
-            @Override
-            protected Expr casePlusExpr(PlusExpr plusExpr) {
-                Expr lhs = this.transform(plusExpr.getLHS());
-                Expr rhs = this.transform(plusExpr.getRHS());
-                if (lhs instanceof IntLiteralExpr && rhs instanceof IntLiteralExpr) {
-                    int lhsValue = ((IntLiteralExpr) lhs).getValue().getValue().intValue();
-                    int rhsValue = ((IntLiteralExpr) rhs).getValue().getValue().intValue();
-                    return new IntLiteralExprBuilder().setValue(lhsValue + rhsValue).build();
-                } else {
-                    PlusExpr copiedExpr = (PlusExpr) this.ASTNodeHandle(plusExpr);
-                    copiedExpr.setLHS(lhs);
-                    copiedExpr.setRHS(rhs);
-                    return copiedExpr;
-                }
-            }
-        });
-    }
-
-    @Override
-    protected List<Stmt> caseAssignStmt(AssignStmt assignStmt) {
-        List<Stmt> retList = new LinkedList<>(super.caseAssignStmt(assignStmt));
-        retList.add(new ExprStmt(new ParameterizedExprBuilder()
-                .setTarget("disp")
-                .addParameter(new StringLiteralExpr(assignStmt.getPrettyPrinted().trim()))
-                .build()
-        ));
-        return retList;
+        Script script = (Script) compilationUnits.getProgram(0);
+        AspectExprTransformer transformer = new AspectExprTransformer();
+        ExprStmt exprStmt = (ExprStmt) script.getStmt(0);
+        Expr result = transformer.transform(exprStmt.getExpr());
+        transformer.getPrefixStmtList().forEach(statement -> System.out.println(statement.getPrettyPrinted()));
+        System.out.println(result.getPrettyPrinted());
+        transformer.getSuffixStmtList().forEach(statement -> System.out.println(statement.getPrettyPrinted()));
     }
 }

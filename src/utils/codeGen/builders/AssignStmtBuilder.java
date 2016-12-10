@@ -2,6 +2,8 @@ package utils.codeGen.builders;
 
 import ast.AssignStmt;
 import ast.Expr;
+import ast.Name;
+import ast.NameExpr;
 
 import java.util.Optional;
 
@@ -15,8 +17,22 @@ public final class AssignStmtBuilder {
         return this;
     }
 
+    public AssignStmtBuilder setLHS(String lhs) {
+        if (lhs == null) throw new NullPointerException();
+        if (lhs.isEmpty()) throw new IllegalArgumentException();
+        this.lhs = new NameExpr(new Name(lhs));
+        return this;
+    }
+
     public AssignStmtBuilder setRHS(Expr rhs) {
         this.rhs = Optional.ofNullable(rhs).orElseThrow(NullPointerException::new);
+        return this;
+    }
+
+    public AssignStmtBuilder setRHS(String rhs) {
+        if (rhs == null) throw new NullPointerException();
+        if (rhs.isEmpty()) throw new IllegalArgumentException();
+        this.rhs = new NameExpr(new Name(rhs));
         return this;
     }
 

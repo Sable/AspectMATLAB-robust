@@ -8,23 +8,38 @@ import java.util.Optional;
 
 /** an abstract representation of AspectMATLAB join point */
 public abstract class AMJoinPoint {
-    private final AMSourceCodePos joinPointPosition;
+    private final AMSourceCodePos joinPointSitePosition;
     private final AMSourceCodePos actionPosition;
 
-    public AMJoinPoint(ASTNode joinPoint, Action action, CompilationInfo compilationInfo) {
-        joinPointPosition = new AMSourceCodePos(
-                Optional.ofNullable(joinPoint).orElseThrow(NullPointerException::new),
+    protected final ASTNode joinPointSiteASTNode;
+    protected final ASTNode actionASTNode;
+
+    public AMJoinPoint(ASTNode joinPointSite, Action action, CompilationInfo compilationInfo) {
+        joinPointSitePosition = new AMSourceCodePos(
+                Optional.ofNullable(joinPointSite).orElseThrow(NullPointerException::new),
                 Optional.ofNullable(compilationInfo).orElseThrow(NullPointerException::new));
         actionPosition = new AMSourceCodePos(
                 Optional.ofNullable(action).orElseThrow(NullPointerException::new),
                 Optional.ofNullable(compilationInfo).orElseThrow(NullPointerException::new));
+
+        joinPointSiteASTNode = Optional.ofNullable(joinPointSite).orElseThrow(NullPointerException::new);
+        actionASTNode = Optional.ofNullable(action).orElseThrow(NullPointerException::new);
+
     }
 
-    public AMSourceCodePos getJoinPointPosition() {
-        return joinPointPosition;
+    public AMSourceCodePos getJoinPointSitePosition() {
+        return joinPointSitePosition;
     }
 
     public AMSourceCodePos getActionPosition() {
         return actionPosition;
+    }
+
+    public ASTNode getJoinPointSiteASTNode() {
+        return joinPointSiteASTNode;
+    }
+
+    public ASTNode getActionASTNode() {
+        return actionASTNode;
     }
 }
