@@ -1,0 +1,24 @@
+\begin{table}[!htbp]
+\begin{center}
+\begin{tabular}{l|l|l}
+\hline
+Pattern            & Classification & Description                                             \\
+\hline
+Annotation         & Primitive      & Capture annotation comments                             \\
+Call               & Primitive      & Capture function calls                                  \\
+Execution          & Primitive      & Capture function execution bodies                       \\
+Get                & Primitive      & Capture matrix accesses (read)                          \\
+Loop               & Primitive      & Capture whole loop statements                           \\
+Loop Body          & Primitive      & Capture loop execution bodies                           \\
+Loop Head          & Primitive      & Capture loop head expressions / statements              \\
+Main Execution     & Primitive      & Capture the first script / function body that executed  \\
+Operator           & Primitive      & Capture arithmetic operation expressions                \\
+Set                & Primitive      & Capture matrix accesses (write)                         \\
+Scope (within)     & Modifier       & Restrict the searching result by its scope              \\
+Shape (dimension)  & Modifier       & Restrict the searching result by its shape              \\
+Type  (istype)     & Modifier       & Restrict the searching result by its type               \\
+\hline
+\end{tabular}
+\end{center}
+\caption{AspectMATLAB pattern specifiction}
+\end{table}

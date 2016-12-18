@@ -16,6 +16,7 @@ public final class AspectExprTransformer extends CopyExprTransformer {
     private LinkedList<Stmt> prefixStmtList = new LinkedList<>();
     private LinkedList<Stmt> suffixStmtList = new LinkedList<>();
     private Set<AMJoinPoint> joinPointSet = new HashSet<>();
+    //private
 
     private VFAnalysis vfAnalysis = null; // TODO
 

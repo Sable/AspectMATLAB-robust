@@ -1,0 +1,18 @@
+\begin{table}[!htbp]
+\begin{center}
+\begin{tabular}{l|l|l}
+\hline
+Pattern    &    Previous Syntax                                                & Updated Syntax                                                                                                     \\
+\hline
+Get        &    get($\langle$ identifier $\rangle$)                            & get($\langle$ identifier $\rangle$:[$\langle$ shape $\rangle$]$\langle$ type $\rangle$)                            \\
+Set        &    set($\langle$ identifier $\rangle$)                            & set($\langle$ identifier $\rangle$:[$\langle$ shape $\rangle$]$\langle$ type $\rangle$)                            \\
+Call       &    call($\langle$ identifier $\rangle$:[$\star$,]*[$\dots$])      & call($\langle$ identifier $\rangle$:[$\star$, $\dots$, [$\langle$ shape $\rangle$]$\langle$ type $\rangle$]*)      \\
+Execution  &    execution($\langle$ identifier $\rangle$:[$\star$,]*[$\dots$]) & execution($\langle$ identifier $\rangle$:[$\star$, $\dots$, [$\langle$ shape $\rangle$]$\langle$ type $\rangle$]*) \\
+Loop       &    loop($\langle$ identifier $\rangle$)                           & loop([for, while, $\star$]:$\langle$ identifier $\rangle$)                                                         \\
+Loop Head  &    loophead($\langle$ identifier $\rangle$)                       & loophead([for, while, $\star$]:$\langle$ identifier $\rangle$)                                                     \\
+Loop Body  &    loopbody($\langle$ identifier $\rangle$)                       & loopbody([for, while, $\star$]:$\langle$ identifier $\rangle$)                                                     \\
+\hline
+\end{tabular}
+\end{center}
+\caption{Updated Pattern Syntax}
+\end{table}

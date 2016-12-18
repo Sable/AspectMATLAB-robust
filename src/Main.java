@@ -8,9 +8,13 @@ import Matlab.Utils.Result;
 import ast.*;
 import transformer.aspect.AspectExprTransformer;
 import transformer.expr.CopyExprTransformer;
+import transformer.expr.examples.ConstantFolding;
 import transformer.pattern.CopyPatternTransformer;
+import transformer.pattern.InplacePatternTransformer;
 import transformer.program.CopyProgramTransformer;
+import transformer.program.InplaceProgramTransformer;
 import transformer.stmt.CopyStmtTransformer;
+import transformer.stmt.examples.StatementTracing;
 import utils.codeGen.builders.IntLiteralExprBuilder;
 import utils.codeGen.builders.ParameterizedExprBuilder;
 
@@ -42,12 +46,13 @@ public class Main {
         final String path = "/Users/k9/Desktop/AspectMATLAB/src/aspect.matlab";
         CompilationUnits compilationUnits = parseOrDie(path);
 
-        Script script = (Script) compilationUnits.getProgram(0);
-        AspectExprTransformer transformer = new AspectExprTransformer();
-        ExprStmt exprStmt = (ExprStmt) script.getStmt(0);
-        Expr result = transformer.transform(exprStmt.getExpr());
-        transformer.getPrefixStmtList().forEach(statement -> System.out.println(statement.getPrettyPrinted()));
-        System.out.println(result.getPrettyPrinted());
-        transformer.getSuffixStmtList().forEach(statement -> System.out.println(statement.getPrettyPrinted()));
+        InplaceProgramTransformer<StatementTracing, InplacePatternTransformer> transformer = new InplaceProgramTransformer<>(
+                new StatementTracing(),
+                new InplacePatternTransformer()
+        );
+
+
+        transformer.transform(compilationUnits);
+        System.out.println(compilationUnits.getPrettyPrinted());
     }
 }

@@ -1,0 +1,19 @@
+\begin{thebibliography}{1}
+
+\bibitem{andrew_aspectmatlb}
+Laurie~Hendren Andrew~Bodzay.
+\newblock Aspectmatlab++: Annotations, types, and aspects for scientists.
+\newblock {\em MODULARITY}, 2015.
+
+\bibitem{mcsaf_master_essay}
+Jesse Doherty.
+\newblock Mcsaf: An extensible static analysis framework for the matlab
+  language.
+\newblock Master's thesis, McGill University, aug 2011.
+
+\bibitem{toheed_aspectmatlab}
+Anton Dubrau Laurie~Hendren Toheed~Aslam, Jesse~Doherty.
+\newblock Aspectmatlab: An aspect-oriented scientific programming language.
+\newblock {\em AOSD}, 2010.
+
+\end{thebibliography}

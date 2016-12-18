@@ -1,0 +1,14 @@
+function [] = test()
+  x = 1;
+  disp('statement of type class ast.AssignStmt');
+  y = 2;
+  disp('statement of type class ast.AssignStmt');
+  if (x < y)
+    disp('''then branch''');
+    disp('statement of type class ast.ExprStmt');
+  else
+    disp('''else branch''');
+    disp('statement of type class ast.ExprStmt');
+  end
+  disp('statement of type class ast.IfStmt');
+end
