@@ -1,1 +1,23 @@
-/Users/k9/Desktop/mclab-core/languages/Natlab/src/natlabRelativeChildIndex.jadd
+// =========================================================================== //
+//                                                                             //
+//   Copyright 2016 Samuel Suffos.                                             //
+//   This file is needed to handle relative node positioning in McAST.         //
+//                                                                             //
+// =========================================================================== //
+
+aspect natlabRelativeChildIndex
+{
+  private int ASTNode.relativeChildIndex = -1;
+
+  @Deprecated
+  public int ASTNode.GetRelativeChildIndex() { return this.relativeChildIndex; }
+
+  @Deprecated
+  public void ASTNode.SetRelativeChildIndex(int value) { this.relativeChildIndex = value; }
+
+  @SuppressWarnings("deprecation")
+  public int ASTNode.getRelativeChildIndex() { return this.GetRelativeChildIndex(); }
+
+  @SuppressWarnings("deprecation")
+  public void ASTNode.setRelativeChildIndex(int value) { this.SetRelativeChildIndex(value); }
+}

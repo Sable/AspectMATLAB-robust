@@ -1,1 +1,29 @@
-/Users/k9/Desktop/mclab-core/languages/Natlab/src/natlabModifications.jadd
+// =========================================================================== //
+//                                                                             //
+//   Copyright 2016 Samuel Suffos.                                             //
+//   This file is needed because of the modifications in file natlab.ast       //
+//                                                                             //
+// =========================================================================== //
+
+aspect natlabModifications
+{
+  public ForStmt.ForStmt(AssignStmt header, ast.List<Stmt> body, boolean isParfor)
+  {
+    this(header, body, isParfor, new Opt<Expr>());
+  }
+
+  public ClassDef.ClassDef(List<Attribute> attributes, String name, List<SuperClass> superClasses, List<HelpComment> helpComments, List<Properties> properties, List<Methods> methods, List<ClassEvents> events)
+  {
+    this(attributes, name, superClasses, helpComments, properties, methods, events, new List<Enumerations>());
+  }
+
+  public Methods.Methods(List<Attribute> attributes, List<Signature> signature, List<PropertyAccess> propertyAccesses, List<Function> functions) 
+  {
+    this(attributes, signature, propertyAccesses, functions, new List<PropertyAccessSignature>()); 
+  }  
+
+  public TryStmt.TryStmt(List<Stmt> tryStmts, List<Stmt> catchStmts)
+  {
+    this(tryStmts, catchStmts, new Opt<Name>());
+  }
+}
