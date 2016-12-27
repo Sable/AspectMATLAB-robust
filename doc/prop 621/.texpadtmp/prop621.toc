@@ -1,7 +1,0 @@
-\contentsline {section}{\numberline {1}Introduction and Motivation}{2}
-\contentsline {section}{\numberline {2}Background and Related Work}{2}
-\contentsline {section}{\numberline {3}Specific Problem Statement}{3}
-\contentsline {section}{\numberline {4}Solution Strategy}{3}
-\contentsline {section}{\numberline {5}Experimental Framework}{3}
-\contentsline {section}{\numberline {6}Schedule of Activities}{3}
-\contentsline {section}{\numberline {7}Expected Results and Evaluation Method}{4}

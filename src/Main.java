@@ -5,21 +5,19 @@ import Matlab.Transformer.NodeToAstTransformer;
 import Matlab.Utils.IReport;
 import Matlab.Utils.Message;
 import Matlab.Utils.Result;
-import ast.*;
-import transformer.aspect.AspectExprTransformer;
-import transformer.expr.CopyExprTransformer;
-import transformer.expr.examples.ConstantFolding;
-import transformer.pattern.CopyPatternTransformer;
+import ast.ASTNode;
+import ast.CompilationUnits;
+import ast.ForStmt;
+import ast.Stmt;
 import transformer.pattern.InplacePatternTransformer;
-import transformer.program.CopyProgramTransformer;
 import transformer.program.InplaceProgramTransformer;
-import transformer.stmt.CopyStmtTransformer;
 import transformer.stmt.examples.StatementTracing;
-import utils.codeGen.builders.IntLiteralExprBuilder;
-import utils.codeGen.builders.ParameterizedExprBuilder;
 
-import java.util.*;
-import java.util.List;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public class Main {
     public static CompilationUnits parseOrDie(String path) {
@@ -51,8 +49,12 @@ public class Main {
                 new InplacePatternTransformer()
         );
 
+        compilationUnits.setIndentTab("    ");
 
-        transformer.transform(compilationUnits);
+        //transformer.transform(compilationUnits);
         System.out.println(compilationUnits.getPrettyPrinted());
+        System.out.println(compilationUnits.getClass().getName());
+        System.out.println(compilationUnits.getProgram(0).getClass().getName());
+
     }
 }
